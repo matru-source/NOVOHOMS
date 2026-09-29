@@ -185,7 +185,6 @@ export default function HomePage() {
     </section>
 
     <section className="properties-section section">
-      <div className="kinetic-title" aria-hidden="true"><span>CURATED OPPORTUNITIES · CURATED OPPORTUNITIES ·&nbsp;</span><span>CURATED OPPORTUNITIES · CURATED OPPORTUNITIES ·&nbsp;</span></div>
       <div className="section-heading row">
         <Reveal><p className="eyebrow">Selected opportunities</p><h2>Distinctive places.<br /><em>Considered potential.</em></h2></Reveal>
         <Reveal delay={100}><Link href="/opportunities" className="text-link">View all opportunities <b>↗</b></Link></Reveal>
