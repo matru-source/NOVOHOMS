@@ -8,43 +8,56 @@ import { PropertyCard } from "./PropertyCard";
 import { properties, whatsapp } from "@/data/site";
 
 export default function HomePage() {
-  const hero = useRef<HTMLElement>(null);
   const [liveProperties, setLiveProperties] = useState(properties);
-  useEffect(() => {
-    const node = hero.current;
-    if (!node || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const move = (e: PointerEvent) => {
-      const r = node.getBoundingClientRect();
-      node.style.setProperty("--mx", `${((e.clientX-r.left)/r.width)*100}%`);
-      node.style.setProperty("--my", `${((e.clientY-r.top)/r.height)*100}%`);
-    };
-    node.addEventListener("pointermove", move);
-    return () => node.removeEventListener("pointermove", move);
-  }, []);
 
   useEffect(() => {
-    fetch("/api/opportunities").then((response) => response.ok ? response.json() as Promise<{ opportunities?: typeof properties }> : null).then((data) => {
-      if (data?.opportunities?.length) setLiveProperties(data.opportunities);
-    }).catch(() => undefined);
+    fetch("/api/opportunities")
+      .then((response) =>
+        response.ok ? (response.json() as Promise<{ opportunities?: typeof properties }>) : null
+      )
+      .then((data) => {
+        if (data?.opportunities?.length) setLiveProperties(data.opportunities);
+      })
+      .catch(() => undefined);
   }, []);
 
-  return <>
-    <section className="hero" ref={hero}>
-      <div className="hero-media" data-parallax="0.045" />
-      <div className="hero-noise" />
-      <div className="hero-spotlight" />
-      <div className="hero-marquee" aria-hidden="true"><div>SPACES THAT MOVE YOU FORWARD · SPACES THAT MOVE YOU FORWARD ·&nbsp;</div><div>SPACES THAT MOVE YOU FORWARD · SPACES THAT MOVE YOU FORWARD ·&nbsp;</div></div>
-      <div className="hero-content">
-        <p className="eyebrow hero-kicker">Bhubaneswar · Real estate advisory</p>
-        <h1><SplitText>Spaces that</SplitText><br /><em><SplitText>move you forward.</SplitText></em></h1>
-        <div className="hero-bottom">
-          <p>Discover the right property, space or investment opportunity—guided by what truly matters to you.</p>
-          <div className="hero-actions"><ButtonLink href="/opportunities">Explore opportunities</ButtonLink><ButtonLink href={whatsapp} light>WhatsApp an advisor</ButtonLink></div>
+  return (
+    <>
+      <section className="hero">
+        <div className="hero-media" data-parallax="0.045" />
+        <div className="hero-noise" />
+        <div className="hero-content">
+          <p className="eyebrow hero-kicker">Bhubaneswar · Real estate advisory</p>
+          <h1>
+            <SplitText>Spaces that</SplitText>
+            <br />
+            <em>
+              <SplitText>move you forward.</SplitText>
+            </em>
+          </h1>
+          <div className="hero-bottom">
+            <p>
+              Discover the right property, space or investment opportunity—guided by what truly
+              matters to you.
+            </p>
+            <div className="hero-actions">
+              <ButtonLink href="/opportunities">Explore opportunities</ButtonLink>
+              <ButtonLink href={whatsapp} light>
+                WhatsApp an advisor
+              </ButtonLink>
+            </div>
+          </div>
         </div>
-      </div>
-      <div className="hero-index"><span>01</span><i /><span>06</span></div>
-      <a href="#journey" className="scroll-cue"><span>Scroll to explore</span><i /></a>
-    </section>
+        <div className="hero-index">
+          <span>01</span>
+          <i />
+          <span>06</span>
+        </div>
+        <a href="#journey" className="scroll-cue">
+          <span>Scroll to explore</span>
+          <i />
+        </a>
+      </section>
 
     <section className="intro section" id="journey">
       <span className="section-coordinate" aria-hidden="true">20.2961° N<br />85.8245° E</span>
@@ -89,5 +102,6 @@ export default function HomePage() {
       <div className="journal-image" data-parallax="0.045" />
       <Reveal className="journal-card"><p className="eyebrow">The NOVOHOMS Journal · Market insight</p><h2>Why price isn&apos;t<br />the same as <em>value.</em></h2><p>A deeper look at what creates value in real estate—and why better questions lead to better decisions.</p><ButtonLink href="/insights/the-novohoms-view-price-isnt-the-same-as-value">Read the perspective</ButtonLink></Reveal>
     </section>
-  </>;
+  </>
+  );
 }
