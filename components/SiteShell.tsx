@@ -172,7 +172,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </div>
           <div>
             <span className="footer-label">Explore</span>
-            {nav.slice(0, 3).map(([l, h]) => (
+            {nav.map(([l, h]) => (
               <Link href={h} key={h}>
                 {l}
               </Link>

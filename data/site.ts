@@ -84,6 +84,7 @@ export const properties: Property[] = [
 ];
 
 export const nav = [
+  ["Home", "/"],
   ["About", "/about"],
   ["Opportunities", "/opportunities"],
   ["How we help", "/how-we-help"],
