@@ -104,7 +104,7 @@ export default function HomePage() {
             className="category-photo-card"
           >
             <img
-              src="/category-residential.jpg"
+              src="/category-residential.png"
               alt="Residential real estate opportunity"
               loading="lazy"
             />
@@ -125,7 +125,7 @@ export default function HomePage() {
             className="category-photo-card"
           >
             <img
-              src="https://novohoms.com/airo-assets/images/pages/home/commercial-architecture"
+              src="/category-commercial.png"
               alt="Commercial real estate opportunity"
               loading="lazy"
             />
@@ -146,7 +146,7 @@ export default function HomePage() {
             className="category-photo-card"
           >
             <img
-              src="https://novohoms.com/airo-assets/images/pages/home/investment-urban"
+              src="/category-investments.png"
               alt="Investments real estate opportunity"
               loading="lazy"
             />
@@ -167,7 +167,7 @@ export default function HomePage() {
             className="category-photo-card"
           >
             <img
-              src="https://novohoms.com/airo-assets/images/pages/home/land-development"
+              src="/category-land.png"
               alt="Land & Plots real estate opportunity"
               loading="lazy"
             />
