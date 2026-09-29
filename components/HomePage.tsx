@@ -9,6 +9,16 @@ import { properties, whatsapp } from "@/data/site";
 
 export default function HomePage() {
   const [liveProperties, setLiveProperties] = useState(properties);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     fetch("/api/opportunities")
@@ -53,14 +63,17 @@ export default function HomePage() {
           <i />
           <span>06</span>
         </div>
-        <a href="#journey" className="scroll-cue">
+        <a
+          href="#journey"
+          className={`scroll-cue ${scrolled ? "is-hidden" : ""}`}
+          aria-label="Scroll to explore"
+        >
           <span>Scroll to explore</span>
           <i />
         </a>
       </section>
 
     <section className="intro section" id="journey">
-      <span className="section-coordinate" aria-hidden="true">20.2961° N<br />85.8245° E</span>
       <div className="section-heading">
         <Reveal><p className="eyebrow">Your journey, considered</p></Reveal>
         <Reveal delay={70}><h2>Real estate should feel<br />less like a search and<br /><em>more like a direction.</em></h2></Reveal>
