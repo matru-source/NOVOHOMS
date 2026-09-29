@@ -71,7 +71,9 @@ export function MotionLayer() {
       <div className="loader-panel loader-panel-b" />
       <div className="loader-panel loader-panel-c" />
       <div className="loader-brand">
-        <span className="loader-monogram">NH</span>
+        <div className="loader-monogram" style={{ border: "none", background: "none", width: "auto", height: "auto" }}>
+          <img src="/brand-mark.png" alt="NOVOHOMS" style={{ height: 54, width: "auto", display: "block" }} />
+        </div>
         <span className="loader-name">NOVOHOMS</span>
         <i><b /></i>
       </div>

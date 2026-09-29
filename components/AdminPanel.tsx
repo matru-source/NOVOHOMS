@@ -263,7 +263,9 @@ export default function AdminPanel() {
   if (checking)
     return (
       <main className="admin-shell admin-loading">
-        <div className="admin-loader-mark">NH</div>
+        <div className="admin-loader-mark" style={{ border: "none", background: "none", width: "auto", height: "auto" }}>
+          <img src="/brand-mark.png" alt="NOVOHOMS" style={{ height: 44, width: "auto" }} />
+        </div>
         <p>Opening workspace…</p>
       </main>
     );
@@ -272,8 +274,9 @@ export default function AdminPanel() {
     return (
       <main className="admin-login">
         <section className="admin-login-brand">
-          <a href="/" className="admin-wordmark">
-            <span>NH</span> NOVOHOMS
+          <a href="/" className="admin-wordmark" style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+            <img src="/brand-mark.png" alt="NOVOHOMS" style={{ height: 28, width: "auto" }} />
+            <span>NOVOHOMS</span>
           </a>
           <div>
             <p>Private workspace</p>
@@ -327,8 +330,9 @@ export default function AdminPanel() {
   return (
     <main className="admin-shell">
       <aside className="admin-sidebar">
-        <a href="/" className="admin-wordmark">
-          <span>NH</span> NOVOHOMS
+        <a href="/" className="admin-wordmark" style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+          <img src="/brand-mark.png" alt="NOVOHOMS" style={{ height: 28, width: "auto" }} />
+          <span>NOVOHOMS</span>
         </a>
         <nav>
           <button

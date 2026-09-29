@@ -22,6 +22,19 @@ export function WhatsAppIcon({ size = 16, className = "" }: { size?: number; cla
   );
 }
 
+export function BrandMark({ size = 32, className = "" }: { size?: number; className?: string }) {
+  return (
+    <img
+      src="/brand-mark.png"
+      alt="NOVOHOMS"
+      width={Math.round(size * (56 / 46))}
+      height={size}
+      className={`brand-logo-mark ${className}`}
+      style={{ height: size, width: "auto", display: "inline-block", verticalAlign: "middle" }}
+    />
+  );
+}
+
 function Arrow() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -98,7 +111,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       <div className="scroll-progress" style={{ transform: `scaleX(${progress})` }} />
       <header className={`site-header ${scrolled ? "scrolled" : ""}`}>
         <Link href="/" className="brand" aria-label="NOVOHOMS home">
-          <span className="brand-mark">NH</span>
+          <BrandMark size={34} />
           <span>NOVOHOMS</span>
         </Link>
         <nav className={open ? "open" : ""} aria-label="Main navigation">
@@ -152,7 +165,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
         <div className="footer-grid">
           <div>
             <Link href="/" className="brand footer-brand">
-              <span className="brand-mark">NH</span>
+              <BrandMark size={30} />
               <span>NOVOHOMS</span>
             </Link>
             <p>Modern real estate advisory for the spaces and decisions that move you forward.</p>
