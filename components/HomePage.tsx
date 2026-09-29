@@ -104,7 +104,7 @@ export default function HomePage() {
             className="category-photo-card"
           >
             <img
-              src="https://novohoms.com/airo-assets/images/pages/home/residential-category"
+              src="/category-residential.jpg"
               alt="Residential real estate opportunity"
               loading="lazy"
             />
