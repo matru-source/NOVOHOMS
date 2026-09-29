@@ -97,50 +97,8 @@ export default function HomePage() {
         </Reveal>
       </div>
 
-      <div className="category-photo-grid">
-        <Reveal variant="clip">
-          <Link
-            href="/opportunities?category=Investment"
-            className="category-photo-card"
-          >
-            <img
-              src="https://novohoms.com/airo-assets/images/pages/home/investment-urban"
-              alt="Investments real estate opportunity"
-              loading="lazy"
-            />
-            <div className="category-photo-content">
-              <p className="category-tag">Opportunity</p>
-              <h3>Investments</h3>
-              <p>Real estate opportunities designed with the future in mind.</p>
-              <span className="category-photo-link">
-                Explore investments <b>↗</b>
-              </span>
-            </div>
-          </Link>
-        </Reveal>
-
-        <Reveal variant="clip" delay={70}>
-          <Link
-            href="/opportunities?category=Commercial"
-            className="category-photo-card"
-          >
-            <img
-              src="https://novohoms.com/airo-assets/images/pages/home/commercial-architecture"
-              alt="Commercial real estate opportunity"
-              loading="lazy"
-            />
-            <div className="category-photo-content">
-              <p className="category-tag">Opportunity</p>
-              <h3>Commercial</h3>
-              <p>Spaces that support businesses, ambition and growth.</p>
-              <span className="category-photo-link">
-                Explore commercial <b>↗</b>
-              </span>
-            </div>
-          </Link>
-        </Reveal>
-
-        <Reveal variant="clip" delay={110}>
+      <div className="category-bento-grid">
+        <Reveal variant="clip" className="bento-residential">
           <Link
             href="/opportunities?category=Residential"
             className="category-photo-card"
@@ -161,7 +119,49 @@ export default function HomePage() {
           </Link>
         </Reveal>
 
-        <Reveal variant="clip" delay={150}>
+        <Reveal variant="clip" delay={60} className="bento-commercial">
+          <Link
+            href="/opportunities?category=Commercial"
+            className="category-photo-card"
+          >
+            <img
+              src="https://novohoms.com/airo-assets/images/pages/home/commercial-architecture"
+              alt="Commercial real estate opportunity"
+              loading="lazy"
+            />
+            <div className="category-photo-content">
+              <p className="category-tag">Opportunity</p>
+              <h3>Commercial</h3>
+              <p>Spaces that support businesses, ambition and growth.</p>
+              <span className="category-photo-link">
+                Explore commercial <b>↗</b>
+              </span>
+            </div>
+          </Link>
+        </Reveal>
+
+        <Reveal variant="clip" delay={100} className="bento-investments">
+          <Link
+            href="/opportunities?category=Investment"
+            className="category-photo-card"
+          >
+            <img
+              src="https://novohoms.com/airo-assets/images/pages/home/investment-urban"
+              alt="Investments real estate opportunity"
+              loading="lazy"
+            />
+            <div className="category-photo-content">
+              <p className="category-tag">Opportunity</p>
+              <h3>Investments</h3>
+              <p>Real estate opportunities designed with the future in mind.</p>
+              <span className="category-photo-link">
+                Explore investments <b>↗</b>
+              </span>
+            </div>
+          </Link>
+        </Reveal>
+
+        <Reveal variant="clip" delay={140} className="bento-land">
           <Link
             href="/opportunities?category=Land%20%26%20plots"
             className="category-photo-card"
