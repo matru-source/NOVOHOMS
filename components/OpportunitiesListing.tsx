@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PropertyCard } from "./PropertyCard";
 import { Reveal } from "./Reveal";
 import type { ManagedOpportunity } from "@/lib/opportunity-store";
@@ -13,6 +13,22 @@ export function OpportunitiesListing({
   properties: ManagedOpportunity[];
 }) {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const cat = params.get("category");
+      if (cat) {
+        const found = categories.find(
+          (c) =>
+            c.toLowerCase() === cat.toLowerCase() ||
+            (c === "Investment" && cat.toLowerCase().startsWith("invest")) ||
+            (c === "Land & plots" && cat.toLowerCase().includes("land"))
+        );
+        if (found) setSelectedCategory(found);
+      }
+    }
+  }, []);
 
   const filtered = useMemo(() => {
     if (selectedCategory === "All") return properties;

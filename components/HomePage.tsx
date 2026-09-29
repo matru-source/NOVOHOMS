@@ -81,9 +81,107 @@ export default function HomePage() {
       <Reveal delay={140} className="intro-copy"><p>We begin with the person, not the property. Your ambitions, timing and idea of what comes next shape every opportunity we bring to the table.</p><Link href="/how-we-help" className="text-link">Discover our approach <b>↗</b></Link></Reveal>
     </section>
 
-    <section className="paths">
-      <Reveal variant="clip" tilt className="path-card path-find"><span className="path-no">01</span><div><p className="eyebrow">I&apos;m looking</p><h2>Find a place<br />that fits your future.</h2><p>Homes, workspaces, land and investments—carefully considered around the life you want to build.</p><ButtonLink href="/opportunities" light>Explore opportunities</ButtonLink></div></Reveal>
-      <Reveal variant="clip" delay={100} className="path-card path-bring"><span className="path-no">02</span><div><p className="eyebrow">I&apos;m bringing</p><h2>Place your opportunity<br />with purpose.</h2><p>For developers, owners and partners ready to meet the right buyers, investors and conversations.</p><ButtonLink href="/partner" light>Partner with us</ButtonLink></div></Reveal>
+    <section className="category-photo-section section" id="categories">
+      <div className="section-heading row">
+        <Reveal>
+          <p className="eyebrow">Explore opportunities</p>
+          <h2>
+            Find what moves<br />
+            <em>you forward.</em>
+          </h2>
+        </Reveal>
+        <Reveal delay={100}>
+          <Link href="/opportunities" className="text-link">
+            Browse all opportunities <b>↗</b>
+          </Link>
+        </Reveal>
+      </div>
+
+      <div className="category-photo-grid">
+        <Reveal variant="clip">
+          <Link
+            href="/opportunities?category=Investment"
+            className="category-photo-card"
+          >
+            <img
+              src="https://novohoms.com/airo-assets/images/pages/home/investment-urban"
+              alt="Investments real estate opportunity"
+              loading="lazy"
+            />
+            <div className="category-photo-content">
+              <p className="category-tag">Opportunity</p>
+              <h3>Investments</h3>
+              <p>Real estate opportunities designed with the future in mind.</p>
+              <span className="category-photo-link">
+                Explore investments <b>↗</b>
+              </span>
+            </div>
+          </Link>
+        </Reveal>
+
+        <Reveal variant="clip" delay={70}>
+          <Link
+            href="/opportunities?category=Commercial"
+            className="category-photo-card"
+          >
+            <img
+              src="https://novohoms.com/airo-assets/images/pages/home/commercial-architecture"
+              alt="Commercial real estate opportunity"
+              loading="lazy"
+            />
+            <div className="category-photo-content">
+              <p className="category-tag">Opportunity</p>
+              <h3>Commercial</h3>
+              <p>Spaces that support businesses, ambition and growth.</p>
+              <span className="category-photo-link">
+                Explore commercial <b>↗</b>
+              </span>
+            </div>
+          </Link>
+        </Reveal>
+
+        <Reveal variant="clip" delay={110}>
+          <Link
+            href="/opportunities?category=Residential"
+            className="category-photo-card"
+          >
+            <img
+              src="https://novohoms.com/airo-assets/images/pages/home/residential-category"
+              alt="Residential real estate opportunity"
+              loading="lazy"
+            />
+            <div className="category-photo-content">
+              <p className="category-tag">Opportunity</p>
+              <h3>Residential</h3>
+              <p>Spaces designed for living, growing and building your future.</p>
+              <span className="category-photo-link">
+                Explore residential <b>↗</b>
+              </span>
+            </div>
+          </Link>
+        </Reveal>
+
+        <Reveal variant="clip" delay={150}>
+          <Link
+            href="/opportunities?category=Land%20%26%20plots"
+            className="category-photo-card"
+          >
+            <img
+              src="https://novohoms.com/airo-assets/images/pages/home/land-development"
+              alt="Land & Plots real estate opportunity"
+              loading="lazy"
+            />
+            <div className="category-photo-content">
+              <p className="category-tag">Opportunity</p>
+              <h3>Land &amp; Plots</h3>
+              <p>Opportunities with the potential to shape what comes next.</p>
+              <span className="category-photo-link">
+                Explore land &amp; plots <b>↗</b>
+              </span>
+            </div>
+          </Link>
+        </Reveal>
+      </div>
     </section>
 
     <section className="properties-section section">
