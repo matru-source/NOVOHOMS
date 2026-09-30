@@ -130,5 +130,41 @@
 @media(max-width:980px){.insights-perspective-grid{grid-template-columns:1fr;max-width:640px}.perspective-card{height:305px}.perspective-card-content{width:44%}}
 @media(max-width:640px){.perspective-card{display:flex;flex-direction:column;height:auto}.perspective-card-img-wrap{position:relative;width:100%;height:215px;order:-1}.perspective-curve-wrap{display:none}.perspective-card-content{width:100%;height:auto;padding:26px 22px;background:var(--paper);border-top:1px solid rgba(196,152,84,.45)}.perspective-card-desc{max-width:100%}}
 
+/* Editorial Article Showcase (Why price isn't the same as value) */
+.article-showcase-section{padding:clamp(75px,8.5vw,130px) clamp(24px,5vw,60px);background:var(--paper)}
+.article-showcase-container{max-width:1080px;margin:0 auto}
+.article-showcase-item{display:grid;grid-template-columns:1fr;margin-bottom:clamp(55px,6.5vw,80px);position:relative}
+.article-showcase-item.has-quote{grid-template-columns:1.35fr 1fr;align-items:center;gap:clamp(30px,4vw,56px)}
+.article-showcase-item.is-indented{padding-left:clamp(40px,7.5vw,110px)}
+.article-step-col{display:flex;gap:clamp(16px,2vw,24px);align-items:flex-start}
+.article-step-marker{display:flex;flex-direction:column;align-items:flex-start;flex-shrink:0;padding-top:4px}
+.article-step-num-row{display:flex;align-items:center;gap:10px}
+.article-step-num{font-family:var(--serif);font-size:15px;font-weight:500;color:var(--gold);line-height:1}
+.article-step-dash{display:block;width:34px;height:1px;background:var(--gold);opacity:.85}
+.article-step-stem{width:1px;height:42px;background:rgba(196,152,84,.45);margin-left:7px;margin-top:8px}
+.article-step-content{flex:1}
+.article-step-title{font-family:var(--serif);font-size:clamp(26px,2.2vw,34px);line-height:1.15;font-weight:500;color:var(--ink);margin:0 0 16px;letter-spacing:-.02em}
+.article-step-text{font-family:var(--serif);font-size:clamp(17px,1.35vw,19px);line-height:1.7;color:#384f49;margin:0}
+.article-quote-card{background:#f6efe3;border-left:3.5px solid var(--gold);border-radius:3px;padding:clamp(22px,2.5vw,30px) clamp(22px,2.6vw,32px);box-shadow:0 8px 24px rgba(16,45,39,.03)}
+.article-quote-text{font-family:var(--serif);font-style:italic;font-size:clamp(19px,1.6vw,22px);line-height:1.42;color:var(--ink);margin:0}
+.article-quote-highlight{color:#b88636;font-style:italic}
+.article-footer-nav{margin-top:75px;padding-top:35px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px}
+.article-share-group{display:flex;align-items:center;gap:12px}
+.article-share-label{font-size:10px;text-transform:uppercase;letter-spacing:.15em;font-weight:700;color:var(--gold)}
+.share-button{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;padding:7px 14px;border-radius:3px;transition:opacity .3s}
+.share-button:hover{opacity:.88}
+.share-whatsapp{background:#2e7d58;color:white}
+.share-linkedin{background:#0a66c2;color:white}
+@media(max-width:920px){
+  .article-showcase-item.has-quote{grid-template-columns:1fr;gap:24px}
+  .article-showcase-item.is-indented{padding-left:0}
+}
+@media(max-width:640px){
+  .article-step-col{gap:14px}
+  .article-step-dash{width:22px}
+  .article-step-stem{height:28px}
+}
+
+
 
 
