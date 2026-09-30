@@ -137,8 +137,16 @@ export function PartnerIntakeForm() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!fullName.trim() || !phone.trim()) {
-      setError("Please provide your full name and contact phone number.");
+    if (!fullName.trim()) {
+      const el = document.getElementById("partner-full-name");
+      el?.focus();
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    if (!phone.trim()) {
+      const el = document.getElementById("partner-phone");
+      el?.focus();
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
     setBusy(true);
@@ -202,7 +210,7 @@ export function PartnerIntakeForm() {
               Tell Us What You <em>Have.</em>
             </h2>
             <p className="partner-intake-lead">
-              Share a few details and we&apos;ll explore how NOVOHOMS can help
+              Share the details and we&apos;ll explore how NOVOHOMS can help
               <br />
               bring it to the right audience.
             </p>
@@ -250,12 +258,6 @@ export function PartnerIntakeForm() {
         ) : (
           <Reveal delay={80}>
             <form onSubmit={handleSubmit} className="partner-intake-form" noValidate>
-              {error && (
-                <div className="partner-form-error" role="alert">
-                  {error}
-                </div>
-              )}
-
               {/* Step 01 */}
               <div className="partner-step-card">
                 <div className="partner-step-split-row">
@@ -471,6 +473,11 @@ export function PartnerIntakeForm() {
                 >
                   {busy ? "Submitting Opportunity..." : "Explore a Partnership →"}
                 </button>
+                {error && (
+                  <p className="partner-submit-error" role="alert">
+                    {error}
+                  </p>
+                )}
               </div>
             </form>
           </Reveal>
