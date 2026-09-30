@@ -22,7 +22,7 @@ export default function ArticlePage() {
           </>
         }
         lead="A deeper look at what really creates value in real estate—and why it matters."
-        image="https://novohoms.com/airo-assets/images/insights/article-price-vs-value-hero"
+        image="/why-price.png"
       >
         <div className="page-hero-meta">
           <span>Jigyasha Singh</span>
