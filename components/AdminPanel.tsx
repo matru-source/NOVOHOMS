@@ -557,6 +557,8 @@ export default function AdminPanel() {
             className={activeTab === "history" ? "active" : ""}
             onClick={() => {
               setActiveTab("history");
+              setHistoryFilter("ALL");
+              setHistorySearch("");
               loadHistory();
             }}
           >
@@ -1067,9 +1069,13 @@ export default function AdminPanel() {
                     color: "var(--admin-ink)",
                   }}
                 >
-                  <option value="ALL">All Entities</option>
-                  <option value="opportunity">Opportunities</option>
-                  <option value="enquiry">Enquiries & Leads</option>
+                  <option value="ALL">All Activities ({historyLogs.length})</option>
+                  <option value="opportunity">
+                    Opportunities ({historyLogs.filter((h) => h.entityType === "opportunity").length})
+                  </option>
+                  <option value="enquiry">
+                    Enquiries & Leads ({historyLogs.filter((h) => h.entityType === "enquiry").length})
+                  </option>
                 </select>
 
                 <label className="admin-search">
@@ -1151,10 +1157,40 @@ export default function AdminPanel() {
 
             {!filteredHistory.length && (
               <div className="admin-empty">
-                <b>No activity history found</b>
-                <p>
-                  Administrative actions such as creating or editing projects and changing enquiry statuses will be recorded here automatically.
-                </p>
+                {historyLogs.length > 0 ? (
+                  <>
+                    <b>
+                      No records found for{" "}
+                      {historyFilter === "enquiry"
+                        ? "Enquiries & Leads"
+                        : historyFilter === "opportunity"
+                        ? "Opportunities"
+                        : "current filter"}
+                      {historySearch ? ` matching "${historySearch}"` : ""}
+                    </b>
+                    <p style={{ maxWidth: 460, margin: "10px auto 20px" }}>
+                      You have {historyLogs.length} activity records logged in other categories. Click below to view all activity history.
+                    </p>
+                    <button
+                      type="button"
+                      className="admin-primary"
+                      style={{ margin: "0 auto", display: "inline-flex" }}
+                      onClick={() => {
+                        setHistoryFilter("ALL");
+                        setHistorySearch("");
+                      }}
+                    >
+                      Show All Activities ({historyLogs.length})
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <b>No activity history found</b>
+                    <p>
+                      Administrative actions such as creating or editing projects and changing enquiry statuses will be recorded here automatically.
+                    </p>
+                  </>
+                )}
               </div>
             )}
           </div>
