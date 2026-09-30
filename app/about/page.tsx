@@ -78,6 +78,31 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <section className="came-together-section">
+        <div className="came-together-grid">
+          <Reveal className="came-together-heading">
+            <p className="eyebrow" style={{ color: "var(--gold)", marginBottom: 20 }}>
+              Why We Came Together
+            </p>
+            <h2>
+              Different Perspectives.<br />One Direction.
+            </h2>
+          </Reveal>
+
+          <Reveal delay={120} className="came-together-copy">
+            <p>
+              We saw an opportunity to combine international perspective with deep local understanding.
+            </p>
+            <p className="highlight-p">
+              Jigyasha brings the wider perspective. Obed brings the local insight.
+            </p>
+            <p>
+              Together, we&apos;re building NOVOHOMS to make real estate simpler, more transparent and more purposeful.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
       <CTA
         title={
           <>
