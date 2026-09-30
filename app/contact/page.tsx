@@ -1,4 +1,5 @@
-import { CallbackForm, EnquiryForm, PageHero } from "@/components/InnerPage";
+import { CallbackForm } from "@/components/CallbackForm";
+import { EnquiryForm, PageHero } from "@/components/InnerPage";
 import { Reveal } from "@/components/Reveal";
 import { whatsapp } from "@/data/site";
 
