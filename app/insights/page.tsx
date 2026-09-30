@@ -88,6 +88,38 @@ export default function InsightsPage() {
           {perspectiveGuides.map((item, idx) => (
             <Reveal delay={idx * 70} key={item.num}>
               <article className="perspective-card">
+                {/* Background photograph extending under the curve */}
+                <div className="perspective-card-img-wrap">
+                  <img
+                    src={item.image}
+                    alt={item.alt}
+                    loading="lazy"
+                    className="perspective-card-img"
+                  />
+                </div>
+
+                {/* Architectural Ivory panel with curved gold divider */}
+                <div className="perspective-curve-wrap" aria-hidden="true">
+                  <svg
+                    viewBox="0 0 100 100"
+                    preserveAspectRatio="none"
+                    className="perspective-curve-svg"
+                  >
+                    <path
+                      d="M -1,-1 L 43,-1 L 43,54 C 43,76 31,96 22,100 L -1,100 Z"
+                      fill="#faf7f0"
+                    />
+                    <path
+                      d="M 43,0 L 43,54 C 43,76 31,96 22,100"
+                      fill="none"
+                      stroke="#c49854"
+                      strokeWidth="1.5"
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  </svg>
+                </div>
+
+                {/* Left text content panel */}
                 <div className="perspective-card-content">
                   <div className="perspective-card-header">
                     <span className="perspective-card-num">{item.num}</span>
@@ -99,33 +131,6 @@ export default function InsightsPage() {
                     {item.title[1]}
                   </h3>
                   <p className="perspective-card-desc">{item.desc}</p>
-                </div>
-                <div className="perspective-card-media">
-                  <img
-                    src={item.image}
-                    alt={item.alt}
-                    loading="lazy"
-                    className="perspective-card-img"
-                  />
-                  <div className="perspective-curve-wrap" aria-hidden="true">
-                    <svg
-                      viewBox="0 0 100 100"
-                      preserveAspectRatio="none"
-                      className="perspective-curve-svg"
-                    >
-                      <path
-                        d="M -1,-1 L 0,-1 L 0,48 C 0,72 16,100 38,100 L -1,100 Z"
-                        fill="#faf7f0"
-                      />
-                      <path
-                        d="M 0,0 L 0,48 C 0,72 16,100 38,100"
-                        fill="none"
-                        stroke="#c49854"
-                        strokeWidth="1.5"
-                        vectorEffect="non-scaling-stroke"
-                      />
-                    </svg>
-                  </div>
                 </div>
               </article>
             </Reveal>
