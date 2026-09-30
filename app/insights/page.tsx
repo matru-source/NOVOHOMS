@@ -106,11 +106,11 @@ export default function InsightsPage() {
                     className="perspective-curve-svg"
                   >
                     <path
-                      d="M -1,-1 L 43,-1 L 43,54 C 43,76 31,96 22,100 L -1,100 Z"
+                      d="M -1,-1 L 44,-1 L 44,50 C 44,70 33,98 28,100 L -1,100 Z"
                       fill="#faf7f0"
                     />
                     <path
-                      d="M 43,0 L 43,54 C 43,76 31,96 22,100"
+                      d="M 44,0 L 44,50 C 44,70 33,98 28,100"
                       fill="none"
                       stroke="#c49854"
                       strokeWidth="1.5"
