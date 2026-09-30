@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState, useRef } from "react";
 import type { ManagedOpportunity } from "@/lib/opportunity-store";
 import type { Enquiry } from "@/lib/enquiry-store";
 import { BrandMark } from "@/components/SiteShell";
@@ -50,8 +50,16 @@ export default function AdminPanel() {
   const [items, setItems] = useState<ManagedOpportunity[]>([]);
   const [query, setQuery] = useState("");
   const [draft, setDraft] = useState<Draft | null>(null);
+  const [galleryItems, setGalleryItems] = useState<{ label: string; image: string }[]>([]);
   const [galleryText, setGalleryText] = useState("");
   const [highlightsText, setHighlightsText] = useState("");
+  const [uploadingPrimary, setUploadingPrimary] = useState(false);
+  const [uploadingGallery, setUploadingGallery] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [manualUrlMode, setManualUrlMode] = useState(false);
+  const [dragOverPrimary, setDragOverPrimary] = useState(false);
+  const primaryInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
 
   // Enquiries state
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
@@ -178,19 +186,113 @@ export default function AdminPanel() {
 
   const openDraft = (item: ManagedOpportunity | Draft) => {
     setDraft({ ...item });
-    setGalleryText(item.gallery ? item.gallery.map((g) => `${g.label} | ${g.image}`).join("\n") : "");
+    const gList = item.gallery ? [...item.gallery] : [];
+    setGalleryItems(gList);
+    setGalleryText(gList.map((g) => `${g.label} | ${g.image}`).join("\n"));
     setHighlightsText(item.highlights ? item.highlights.map((h) => `${h.title} | ${h.text}`).join("\n") : "");
+    setUploadError(null);
+    setManualUrlMode(false);
+  };
+
+  const uploadFile = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await fetch("/api/admin/upload", {
+      method: "POST",
+      body: formData,
+    });
+    const data = (await res.json()) as { error?: string; url?: string };
+    if (!res.ok || !data.url) {
+      throw new Error(data.error || "Failed to upload image.");
+    }
+    return data.url;
+  };
+
+  const handlePrimaryFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !draft) return;
+    setUploadingPrimary(true);
+    setUploadError(null);
+    try {
+      const url = await uploadFile(file);
+      setDraft((prev) => (prev ? { ...prev, image: url } : null));
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Upload failed.");
+    } finally {
+      setUploadingPrimary(false);
+      e.target.value = "";
+    }
+  };
+
+  const handleGalleryFilesChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0 || !draft) return;
+    setUploadingGallery(true);
+    setUploadError(null);
+    try {
+      const uploaded: { label: string; image: string }[] = [];
+      for (const file of files) {
+        const url = await uploadFile(file);
+        const rawName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]+/g, " ").trim();
+        const label = rawName ? rawName.charAt(0).toUpperCase() + rawName.slice(1) : "Gallery Image";
+        uploaded.push({ label, image: url });
+      }
+      setGalleryItems((prev) => {
+        const next = [...prev, ...uploaded];
+        setGalleryText(next.map((g) => `${g.label} | ${g.image}`).join("\n"));
+        return next;
+      });
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Failed to upload gallery images.");
+    } finally {
+      setUploadingGallery(false);
+      e.target.value = "";
+    }
+  };
+
+  const updateGalleryLabel = (index: number, newLabel: string) => {
+    setGalleryItems((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], label: newLabel };
+      setGalleryText(next.map((g) => `${g.label} | ${g.image}`).join("\n"));
+      return next;
+    });
+  };
+
+  const removeGalleryItem = (index: number) => {
+    setGalleryItems((prev) => {
+      const next = prev.filter((_, i) => i !== index);
+      setGalleryText(next.map((g) => `${g.label} | ${g.image}`).join("\n"));
+      return next;
+    });
+  };
+
+  const moveGalleryItem = (index: number, direction: -1 | 1) => {
+    setGalleryItems((prev) => {
+      const target = index + direction;
+      if (target < 0 || target >= prev.length) return prev;
+      const next = [...prev];
+      const temp = next[index];
+      next[index] = next[target];
+      next[target] = temp;
+      setGalleryText(next.map((g) => `${g.label} | ${g.image}`).join("\n"));
+      return next;
+    });
   };
 
   const save = async (event: FormEvent) => {
     event.preventDefault();
     if (!draft) return;
+    if (!draft.image) {
+      setNotice({ type: "error", text: "Please upload or provide a primary cover image." });
+      return;
+    }
     setBusy(true);
     setNotice(null);
     try {
       const parsedDraft = {
         ...draft,
-        gallery: parseLines(galleryText, "label", "image") as ManagedOpportunity["gallery"],
+        gallery: galleryItems.length > 0 ? galleryItems : (parseLines(galleryText, "label", "image") as ManagedOpportunity["gallery"]),
         highlights: parseLines(highlightsText, "title", "text") as ManagedOpportunity["highlights"],
       };
       const endpoint = draft.id ? `/api/admin/opportunities/${draft.id}` : "/api/admin/opportunities";
@@ -989,27 +1091,222 @@ export default function AdminPanel() {
                   </label>
                 </div>
               </section>
-              <section>
-                <h3>Images</h3>
-                <label>
-                  Primary image URL
+              <section className="admin-images-section">
+                <div className="admin-section-header">
+                  <h3>Images</h3>
+                  {uploadError && <p className="admin-upload-error">{uploadError}</p>}
+                </div>
+
+                {/* PRIMARY COVER IMAGE */}
+                <div className="admin-field-group">
+                  <div className="admin-label-row">
+                    <span className="admin-field-label">
+                      Primary Cover Image <span className="admin-req-badge">Required</span>
+                    </span>
+                    <button
+                      type="button"
+                      className="admin-link-toggle"
+                      onClick={() => setManualUrlMode(!manualUrlMode)}
+                    >
+                      {manualUrlMode ? "← Switch to file upload" : "Enter URL manually"}
+                    </button>
+                  </div>
+
                   <input
-                    type="url"
-                    value={draft.image}
-                    onChange={(e) => setDraft({ ...draft, image: e.target.value })}
-                    required
-                    placeholder="https://…"
+                    ref={primaryInputRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/avif,image/gif"
+                    style={{ display: "none" }}
+                    onChange={handlePrimaryFileChange}
                   />
-                </label>
-                <label>
-                  Gallery images <small>One per line: Label | Image URL</small>
-                  <textarea
-                    rows={6}
-                    value={galleryText}
-                    onChange={(e) => setGalleryText(e.target.value)}
-                    placeholder="Grand entrance | https://…"
+
+                  {manualUrlMode ? (
+                    <input
+                      type="url"
+                      value={draft.image}
+                      onChange={(e) => setDraft({ ...draft, image: e.target.value })}
+                      placeholder="https://… or /api/media/…"
+                      className="admin-url-input"
+                    />
+                  ) : draft.image ? (
+                    <div className="admin-image-preview-card">
+                      <img
+                        src={draft.image}
+                        alt="Primary Preview"
+                        className="admin-image-preview-img"
+                      />
+                      <div className="admin-image-preview-overlay">
+                        <span className="admin-image-preview-tag">
+                          {draft.image.startsWith("/api/media") ? "Uploaded Image" : "Primary Image"}
+                        </span>
+                        <div className="admin-preview-actions">
+                          <button
+                            type="button"
+                            className="admin-preview-btn primary"
+                            disabled={uploadingPrimary}
+                            onClick={() => primaryInputRef.current?.click()}
+                          >
+                            {uploadingPrimary ? "Uploading…" : "🔄 Replace Image"}
+                          </button>
+                          <button
+                            type="button"
+                            className="admin-preview-btn danger"
+                            disabled={uploadingPrimary}
+                            onClick={() => setDraft({ ...draft, image: "" })}
+                          >
+                            ✕ Remove
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      className={`admin-image-upload-zone ${dragOverPrimary ? "is-drag-over" : ""}`}
+                      onClick={() => !uploadingPrimary && primaryInputRef.current?.click()}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        setDragOverPrimary(true);
+                      }}
+                      onDragLeave={() => setDragOverPrimary(false)}
+                      onDrop={async (e) => {
+                        e.preventDefault();
+                        setDragOverPrimary(false);
+                        const file = e.dataTransfer.files?.[0];
+                        if (!file || !draft) return;
+                        setUploadingPrimary(true);
+                        setUploadError(null);
+                        try {
+                          const url = await uploadFile(file);
+                          setDraft((prev) => (prev ? { ...prev, image: url } : null));
+                        } catch (err) {
+                          setUploadError(err instanceof Error ? err.message : "Upload failed.");
+                        } finally {
+                          setUploadingPrimary(false);
+                        }
+                      }}
+                    >
+                      {uploadingPrimary ? (
+                        <div className="admin-upload-loader">
+                          <div className="admin-spinner" />
+                          <p>Uploading primary image to media library…</p>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="admin-upload-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                              <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                              <circle cx="9" cy="9" r="2"/>
+                              <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                            </svg>
+                          </div>
+                          <b className="admin-upload-title">Click to browse or drag & drop image</b>
+                          <p className="admin-upload-sub">Supports PNG, JPG, WebP, AVIF up to 12MB</p>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* GALLERY IMAGES */}
+                <div className="admin-field-group" style={{ marginTop: 26 }}>
+                  <div className="admin-label-row">
+                    <div>
+                      <span className="admin-field-label">Gallery Images</span>
+                      <small className="admin-field-desc">
+                        Showcase interior, exterior, architecture & amenities.
+                      </small>
+                    </div>
+                    <button
+                      type="button"
+                      className="admin-upload-btn"
+                      disabled={uploadingGallery}
+                      onClick={() => galleryInputRef.current?.click()}
+                    >
+                      {uploadingGallery ? "Uploading…" : "＋ Upload Photos"}
+                    </button>
+                  </div>
+
+                  <input
+                    ref={galleryInputRef}
+                    type="file"
+                    multiple
+                    accept="image/png,image/jpeg,image/webp,image/avif,image/gif"
+                    style={{ display: "none" }}
+                    onChange={handleGalleryFilesChange}
                   />
-                </label>
+
+                  {uploadingGallery && (
+                    <div className="admin-upload-loader-small">
+                      <div className="admin-spinner small" />
+                      <span>Uploading gallery photos to media library…</span>
+                    </div>
+                  )}
+
+                  {galleryItems.length > 0 ? (
+                    <div className="admin-gallery-list">
+                      {galleryItems.map((item, index) => (
+                        <div key={`${item.image}-${index}`} className="admin-gallery-row">
+                          <img
+                            src={item.image}
+                            alt=""
+                            className="admin-gallery-thumb"
+                          />
+                          <div className="admin-gallery-input-wrap">
+                            <label className="admin-gallery-item-label">
+                              Caption / Label
+                              <input
+                                type="text"
+                                value={item.label}
+                                placeholder="e.g. Grand Entrance, Living Room"
+                                onChange={(e) => updateGalleryLabel(index, e.target.value)}
+                              />
+                            </label>
+                          </div>
+                          <div className="admin-gallery-actions">
+                            <button
+                              type="button"
+                              title="Move Up"
+                              disabled={index === 0}
+                              onClick={() => moveGalleryItem(index, -1)}
+                              className="admin-gallery-action-btn"
+                            >
+                              ↑
+                            </button>
+                            <button
+                              type="button"
+                              title="Move Down"
+                              disabled={index === galleryItems.length - 1}
+                              onClick={() => moveGalleryItem(index, 1)}
+                              className="admin-gallery-action-btn"
+                            >
+                              ↓
+                            </button>
+                            <button
+                              type="button"
+                              title="Remove"
+                              onClick={() => removeGalleryItem(index)}
+                              className="admin-gallery-action-btn danger"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div
+                      className="admin-gallery-empty-zone"
+                      onClick={() => !uploadingGallery && galleryInputRef.current?.click()}
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/>
+                        <path d="M12 12v9"/>
+                        <path d="m16 16-4-4-4 4"/>
+                      </svg>
+                      <span>No gallery images uploaded yet. Click &quot;＋ Upload Photos&quot; to select images.</span>
+                    </div>
+                  )}
+                </div>
               </section>
               <section>
                 <h3>Highlights</h3>
