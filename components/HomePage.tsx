@@ -72,10 +72,27 @@ export default function HomePage() {
     <section className="intro section" id="journey">
       <div className="section-heading">
         <Reveal><p className="eyebrow">Your journey, considered</p></Reveal>
-        <Reveal delay={70}><h2>Real estate should feel<br />less like a search and<br /><em>more like a direction.</em></h2></Reveal>
+        <Reveal delay={70}>
+          <h2>
+            Real estate should feel
+            <br />
+            less like a search and
+            <br />
+            <em>more like a direction.</em>
+          </h2>
+        </Reveal>
+        <Reveal delay={130} className="intro-copy">
+          <p>
+            We begin with the person, not the property. Your ambitions, timing and idea of
+            what comes next shape every opportunity we bring to the table.
+          </p>
+          <Link href="/how-we-help" className="text-link">
+            Discover our approach <b>↗</b>
+          </Link>
+        </Reveal>
       </div>
-      <Reveal delay={140} className="intro-copy"><p>We begin with the person, not the property. Your ambitions, timing and idea of what comes next shape every opportunity we bring to the table.</p><Link href="/how-we-help" className="text-link">Discover our approach <b>↗</b></Link></Reveal>
-      <Reveal delay={200} variant="clip" className="intro-blueprint-wrap">
+
+      <Reveal delay={170} variant="clip" className="intro-visual">
         <div className="blueprint-showcase-frame">
           <div className="blueprint-meta-bar">
             <span>FIG. 01 — ARCHITECTURAL TYPOGRAPHY & PLATFORM ECOSYSTEM</span>
