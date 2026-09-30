@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import type { ManagedOpportunity } from "@/lib/opportunity-store";
 import type { Enquiry } from "@/lib/enquiry-store";
+import { BrandMark } from "@/components/SiteShell";
 
 type Notice = { type: "success" | "error"; text: string } | null;
 type Draft = Omit<ManagedOpportunity, "id" | "updatedAt"> & { id?: number; updatedAt?: string };
@@ -264,7 +265,7 @@ export default function AdminPanel() {
     return (
       <main className="admin-shell admin-loading">
         <div className="admin-loader-mark" style={{ border: "none", background: "none", width: "auto", height: "auto" }}>
-          <img src="/brand-mark.png" alt="NOVOHOMS" style={{ height: 44, width: "auto" }} />
+          <BrandMark size={44} />
         </div>
         <p>Opening workspace…</p>
       </main>
@@ -274,8 +275,8 @@ export default function AdminPanel() {
     return (
       <main className="admin-login">
         <section className="admin-login-brand">
-          <a href="/" className="admin-wordmark" style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
-            <img src="/brand-mark.png" alt="NOVOHOMS" style={{ height: 28, width: "auto" }} />
+          <a href="/" className="brand" style={{ color: "white" }}>
+            <BrandMark size={34} />
             <span>NOVOHOMS</span>
           </a>
           <div>
@@ -330,8 +331,8 @@ export default function AdminPanel() {
   return (
     <main className="admin-shell">
       <aside className="admin-sidebar">
-        <a href="/" className="admin-wordmark" style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
-          <img src="/brand-mark.png" alt="NOVOHOMS" style={{ height: 28, width: "auto" }} />
+        <a href="/" className="brand" style={{ color: "white" }}>
+          <BrandMark size={34} />
           <span>NOVOHOMS</span>
         </a>
         <nav>
