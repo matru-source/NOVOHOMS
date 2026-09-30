@@ -110,20 +110,76 @@ export async function getOpportunityBySlug(slug: string, includeDrafts = false) 
   return rows[0] ? toOpportunity(rows[0] as OpportunityRow) : null;
 }
 
+import { recordActivity } from "@/lib/history-store";
+
 export async function createOpportunity(value: Partial<ManagedOpportunity>) {
   await ensureSchema(); const item = normalizeOpportunity(value); const sql = database();
   const rows = await sql`INSERT INTO opportunities (slug,name,eyebrow,location,tagline,summary,config,status,category,image,gallery_json,highlights_json,published,featured,sort_order)
     VALUES (${item.slug},${item.name},${item.eyebrow},${item.location},${item.tagline},${item.summary},${item.config},${item.status},${item.category},${item.image},${JSON.stringify(item.gallery)},${JSON.stringify(item.highlights)},${item.published},${item.featured},${item.sortOrder}) RETURNING *`;
-  return toOpportunity(rows[0] as OpportunityRow);
+  const created = toOpportunity(rows[0] as OpportunityRow);
+  await recordActivity({
+    actionType: "OPPORTUNITY_CREATE",
+    entityType: "opportunity",
+    entityId: created.id,
+    entityName: created.name,
+    description: `Created new project "${created.name}" (${created.category}, ${created.location})`,
+    afterState: created as unknown as Record<string, unknown>,
+  });
+  return created;
 }
 
 export async function updateOpportunity(id: number, value: Partial<ManagedOpportunity>) {
   await ensureSchema(); const item = normalizeOpportunity(value); const sql = database();
+  const existingRows = await sql`SELECT * FROM opportunities WHERE id = ${id} LIMIT 1`;
+  if (!existingRows[0]) throw new Error("Opportunity not found.");
+  const before = toOpportunity(existingRows[0] as OpportunityRow);
+
   const rows = await sql`UPDATE opportunities SET slug=${item.slug},name=${item.name},eyebrow=${item.eyebrow},location=${item.location},tagline=${item.tagline},summary=${item.summary},config=${item.config},status=${item.status},category=${item.category},image=${item.image},gallery_json=${JSON.stringify(item.gallery)},highlights_json=${JSON.stringify(item.highlights)},published=${item.published},featured=${item.featured},sort_order=${item.sortOrder},updated_at=NOW() WHERE id=${id} RETURNING *`;
   if (!rows[0]) throw new Error("Opportunity not found.");
-  return toOpportunity(rows[0] as OpportunityRow);
+  const updated = toOpportunity(rows[0] as OpportunityRow);
+
+  const changes: string[] = [];
+  if (before.name !== updated.name) changes.push(`Name: "${updated.name}"`);
+  if (before.status !== updated.status) changes.push(`Status: "${updated.status}"`);
+  if (before.published !== updated.published) changes.push(updated.published ? "Published" : "Moved to Draft");
+  if (before.featured !== updated.featured) changes.push(updated.featured ? "Marked Featured" : "Unmarked Featured");
+  if (before.image !== updated.image) changes.push("Updated cover photo");
+  if (before.gallery.length !== updated.gallery.length) changes.push(`Gallery count: ${updated.gallery.length}`);
+  if (before.location !== updated.location) changes.push(`Location: "${updated.location}"`);
+
+  const desc = changes.length > 0 
+    ? `Updated "${updated.name}" (${changes.join(", ")})`
+    : `Updated details for "${updated.name}"`;
+
+  await recordActivity({
+    actionType: "OPPORTUNITY_UPDATE",
+    entityType: "opportunity",
+    entityId: updated.id,
+    entityName: updated.name,
+    description: desc,
+    beforeState: before as unknown as Record<string, unknown>,
+    afterState: updated as unknown as Record<string, unknown>,
+  });
+
+  return updated;
 }
 
 export async function deleteOpportunity(id: number) {
-  await ensureSchema(); const sql = database(); await sql`DELETE FROM opportunities WHERE id = ${id}`;
+  await ensureSchema(); const sql = database();
+  const existingRows = await sql`SELECT * FROM opportunities WHERE id = ${id} LIMIT 1`;
+  if (existingRows[0]) {
+    const before = toOpportunity(existingRows[0] as OpportunityRow);
+    await sql`DELETE FROM opportunities WHERE id = ${id}`;
+    await recordActivity({
+      actionType: "OPPORTUNITY_DELETE",
+      entityType: "opportunity",
+      entityId: id,
+      entityName: before.name,
+      description: `Deleted project "${before.name}" (${before.location})`,
+      beforeState: before as unknown as Record<string, unknown>,
+    });
+  } else {
+    await sql`DELETE FROM opportunities WHERE id = ${id}`;
+  }
 }
+

@@ -99,6 +99,38 @@
 .admin-gallery-empty-zone{border:1px dashed rgba(18,53,46,.2);border-radius:6px;padding:26px 18px;text-align:center;background:#ffffff;color:#788681;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-size:12px;cursor:pointer;transition:border-color .2s}
 .admin-gallery-empty-zone:hover{border-color:var(--admin-gold);color:var(--admin-ink)}
 
+/* Admin Activity History Styles */
+.admin-history-table-head,.admin-history-row{display:grid;grid-template-columns:140px 140px 180px 1fr 110px;gap:16px;align-items:center}
+.admin-history-table-head{padding:12px 26px;background:#ecebe5;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#788681;font-weight:700}
+.admin-history-row{padding:16px 26px;border-bottom:1px solid rgba(18,53,46,.085);transition:background .2s}
+.admin-history-row:hover{background:#faf8f1}
+.admin-hist-meta{display:flex;flex-direction:column;gap:2px}
+.admin-hist-time-rel{font-size:12px;font-weight:600;color:var(--admin-ink)}
+.admin-hist-time-exact{font-size:9.5px;color:#87928f}
+.admin-hist-actor{font-size:9.5px;color:var(--admin-gold);font-weight:600;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
+.admin-hist-badge{font-size:10px;font-weight:700;padding:4px 8px;border-radius:3px;display:inline-block;text-transform:uppercase;letter-spacing:.04em;text-align:center}
+.admin-hist-badge.created{background:#e6f4ea;color:#137333}
+.admin-hist-badge.updated{background:#fef7e0;color:#b06000}
+.admin-hist-badge.deleted{background:#fce8e6;color:#c5221f}
+.admin-hist-badge.status{background:#e8f0fe;color:#1a73e8}
+.admin-hist-badge.undo{background:#f3e8fd;color:#7b1fa2}
+.admin-hist-entity{min-width:0}
+.admin-hist-entity b{display:block;font:500 14px var(--serif);color:var(--admin-ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.admin-hist-entity small{display:block;font-size:9.5px;text-transform:uppercase;color:#87928f}
+.admin-hist-desc{font-size:12.5px;color:#3d504a;line-height:1.45}
+.admin-hist-desc p{margin:0}
+.admin-hist-actions{display:flex;justify-content:flex-end}
+.admin-undo-btn{padding:6px 14px;background:#ffffff;border:1px solid rgba(18,53,46,.25);color:var(--admin-ink);border-radius:4px;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:4px}
+.admin-undo-btn:hover{background:var(--admin-ink);color:#ffffff;border-color:var(--admin-ink)}
+.admin-undo-btn:disabled{opacity:.5;cursor:wait}
+.admin-undone-badge{font-size:10.5px;font-weight:600;color:#758580;background:#e5e3dc;padding:4px 9px;border-radius:3px;display:inline-block}
+.admin-revert-badge{color:#b0b7b4;font-size:13px}
+@media(max-width:1050px){
+  .admin-history-table-head{display:none}
+  .admin-history-row{grid-template-columns:1fr;gap:8px;padding:16px 20px}
+  .admin-hist-actions{justify-content:flex-start;margin-top:6px}
+}
+
 
 /* Founders showcase section (About page) */
 .founders-showcase-section{padding:clamp(70px,8vw,130px) clamp(24px,6vw,90px);background:var(--cream);position:relative}

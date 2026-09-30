@@ -136,6 +136,8 @@ export async function listEnquiries(): Promise<Enquiry[]> {
   return fallbackEnquiries;
 }
 
+import { recordActivity } from "@/lib/history-store";
+
 export async function updateEnquiryStatus(
   id: number,
   status: "New" | "Contacted" | "Follow-up" | "Closed"
@@ -144,8 +146,21 @@ export async function updateEnquiryStatus(
   if (sql) {
     try {
       await ensureSchema();
-      await sql`UPDATE enquiries SET status = ${status} WHERE id = ${id}`;
-      return true;
+      const existing = (await sql`SELECT * FROM enquiries WHERE id = ${id} LIMIT 1`) as EnquiryRow[];
+      if (existing[0]) {
+        const before = toEnquiry(existing[0]);
+        await sql`UPDATE enquiries SET status = ${status} WHERE id = ${id}`;
+        await recordActivity({
+          actionType: "ENQUIRY_STATUS_UPDATE",
+          entityType: "enquiry",
+          entityId: id,
+          entityName: before.name,
+          description: `Changed status of "${before.name}" from "${before.status}" to "${status}"`,
+          beforeState: before as unknown as Record<string, unknown>,
+          afterState: { ...before, status } as unknown as Record<string, unknown>,
+        });
+        return true;
+      }
     } catch (err) {
       console.error("Failed to update enquiry status in DB:", err);
     }
@@ -163,8 +178,23 @@ export async function deleteEnquiry(id: number): Promise<boolean> {
   if (sql) {
     try {
       await ensureSchema();
-      await sql`DELETE FROM enquiries WHERE id = ${id}`;
-      return true;
+      const existing = (await sql`SELECT * FROM enquiries WHERE id = ${id} LIMIT 1`) as EnquiryRow[];
+      if (existing[0]) {
+        const before = toEnquiry(existing[0]);
+        await sql`DELETE FROM enquiries WHERE id = ${id}`;
+        await recordActivity({
+          actionType: "ENQUIRY_DELETE",
+          entityType: "enquiry",
+          entityId: id,
+          entityName: before.name,
+          description: `Deleted enquiry from "${before.name}" (${before.phone})`,
+          beforeState: before as unknown as Record<string, unknown>,
+        });
+        return true;
+      } else {
+        await sql`DELETE FROM enquiries WHERE id = ${id}`;
+        return true;
+      }
     } catch (err) {
       console.error("Failed to delete enquiry in DB:", err);
     }
@@ -172,3 +202,4 @@ export async function deleteEnquiry(id: number): Promise<boolean> {
   fallbackEnquiries = fallbackEnquiries.filter((e) => e.id !== id);
   return true;
 }
+

@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useMemo, useState, useRef } from "react";
 import type { ManagedOpportunity } from "@/lib/opportunity-store";
 import type { Enquiry } from "@/lib/enquiry-store";
+import type { ActivityLog } from "@/lib/history-store";
 import { BrandMark } from "@/components/SiteShell";
 
 type Notice = { type: "success" | "error"; text: string } | null;
@@ -43,8 +44,15 @@ export default function AdminPanel() {
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<Notice>(null);
 
-  // Tab navigation: "opportunities" | "enquiries"
-  const [activeTab, setActiveTab] = useState<"opportunities" | "enquiries">("opportunities");
+  // Tab navigation: "opportunities" | "enquiries" | "history"
+  const [activeTab, setActiveTab] = useState<"opportunities" | "enquiries" | "history">("opportunities");
+
+  // History state
+  const [historyLogs, setHistoryLogs] = useState<ActivityLog[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyFilter, setHistoryFilter] = useState<"ALL" | "opportunity" | "enquiry">("ALL");
+  const [historySearch, setHistorySearch] = useState("");
+  const [undoingId, setUndoingId] = useState<number | null>(null);
 
   // Opportunities state
   const [items, setItems] = useState<ManagedOpportunity[]>([]);
@@ -98,8 +106,43 @@ export default function AdminPanel() {
     }
   };
 
+  const loadHistory = async () => {
+    setHistoryLoading(true);
+    try {
+      const response = await fetch("/api/admin/history", { cache: "no-store" });
+      if (response.ok) {
+        const data = (await response.json()) as { history?: ActivityLog[] };
+        setHistoryLogs(data.history || []);
+      }
+    } catch (err) {
+      console.error("Failed to load history:", err);
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
+
+  const handleUndo = async (log: ActivityLog) => {
+    if (!window.confirm(`Undo this action?\n\n"${log.description}"\n\nThis will restore previous data.`)) {
+      return;
+    }
+    setUndoingId(log.id);
+    try {
+      const res = await fetch(`/api/admin/history/${log.id}/undo`, {
+        method: "POST",
+      });
+      const data = (await res.json()) as { error?: string; message?: string };
+      if (!res.ok) throw new Error(data.error || "Failed to undo action.");
+      setNotice({ type: "success", text: data.message || "Action reverted successfully." });
+      await loadAll();
+    } catch (err) {
+      setNotice({ type: "error", text: err instanceof Error ? err.message : "Failed to undo action." });
+    } finally {
+      setUndoingId(null);
+    }
+  };
+
   const loadAll = async () => {
-    await Promise.all([loadOpportunities(), loadEnquiries()]);
+    await Promise.all([loadOpportunities(), loadEnquiries(), loadHistory()]);
   };
 
   useEffect(() => {
@@ -152,6 +195,49 @@ export default function AdminPanel() {
     [enquiries, enquiryQuery, statusFilter]
   );
   const newEnquiriesCount = enquiries.filter((e) => e.status === "New").length;
+
+  const filteredHistory = useMemo(() => {
+    return historyLogs.filter((item) => {
+      const matchesType =
+        historyFilter === "ALL" || item.entityType === historyFilter;
+      const matchesSearch =
+        `${item.entityName} ${item.description} ${item.actorEmail} ${item.actionType}`
+          .toLowerCase()
+          .includes(historySearch.toLowerCase());
+      return matchesType && matchesSearch;
+    });
+  }, [historyLogs, historyFilter, historySearch]);
+
+  const formatTimeAgo = (dateStr: string) => {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return "Just now";
+    if (mins < 60) return `${mins}m ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days}d ago`;
+    return new Date(dateStr).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+  };
+
+  const renderActionBadge = (type: ActivityLog["actionType"]) => {
+    switch (type) {
+      case "OPPORTUNITY_CREATE":
+        return <span className="admin-hist-badge created">Project Created</span>;
+      case "OPPORTUNITY_UPDATE":
+        return <span className="admin-hist-badge updated">Project Updated</span>;
+      case "OPPORTUNITY_DELETE":
+        return <span className="admin-hist-badge deleted">Project Deleted</span>;
+      case "ENQUIRY_STATUS_UPDATE":
+        return <span className="admin-hist-badge status">Status Changed</span>;
+      case "ENQUIRY_DELETE":
+        return <span className="admin-hist-badge deleted">Enquiry Deleted</span>;
+      case "UNDO":
+        return <span className="admin-hist-badge undo">Reverted (Undo)</span>;
+      default:
+        return <span className="admin-hist-badge">{type}</span>;
+    }
+  };
 
   const login = async (event: FormEvent) => {
     event.preventDefault();
@@ -466,6 +552,17 @@ export default function AdminPanel() {
                 {newEnquiriesCount} New
               </span>
             )}
+          </button>
+          <button
+            className={activeTab === "history" ? "active" : ""}
+            onClick={() => {
+              setActiveTab("history");
+              loadHistory();
+            }}
+          >
+            <span style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <i>03</i> Action History
+            </span>
           </button>
           <a href="/opportunities" target="_blank">
             <i>↗</i> View live site
@@ -874,6 +971,190 @@ export default function AdminPanel() {
               <div className="admin-empty">
                 <b>No client enquiries found</b>
                 <p>When visitors fill out forms on the website, they will appear here instantly.</p>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* TAB 3: ACTION HISTORY & AUDIT LOG */}
+      {activeTab === "history" && (
+        <section className="admin-workspace">
+          <header className="admin-topbar">
+            <div>
+              <p>Audit trail & recovery</p>
+              <h1>Action History</h1>
+            </div>
+            <button
+              className="admin-primary"
+              onClick={loadHistory}
+              disabled={historyLoading}
+            >
+              <span>↻</span> {historyLoading ? "Refreshing..." : "Refresh log"}
+            </button>
+          </header>
+
+          {notice && (
+            <div className={`admin-notice ${notice.type}`}>
+              {notice.text}
+              <button onClick={() => setNotice(null)}>×</button>
+            </div>
+          )}
+
+          <div className="admin-stats">
+            <article>
+              <span>Total operations</span>
+              <b>{historyLogs.length.toString().padStart(2, "0")}</b>
+              <small>All logged system events</small>
+            </article>
+            <article>
+              <span>Today&apos;s activity</span>
+              <b>
+                {historyLogs
+                  .filter(
+                    (h) =>
+                      new Date(h.createdAt).toDateString() ===
+                      new Date().toDateString()
+                  )
+                  .length.toString()
+                  .padStart(2, "0")}
+              </b>
+              <small>Modifications made today</small>
+            </article>
+            <article>
+              <span>Reverted actions</span>
+              <b>
+                {historyLogs
+                  .filter((h) => h.isUndone)
+                  .length.toString()
+                  .padStart(2, "0")}
+              </b>
+              <small>Successfully undone changes</small>
+            </article>
+            <article>
+              <span>Active records</span>
+              <b>
+                {historyLogs
+                  .filter((h) => !h.isUndone && h.actionType !== "UNDO")
+                  .length.toString()
+                  .padStart(2, "0")}
+              </b>
+              <small>Current irreversible/live edits</small>
+            </article>
+          </div>
+
+          <div className="admin-list-card">
+            <div className="admin-list-tools">
+              <div>
+                <h2>Audit timeline</h2>
+                <p>Track all modifications with one-click undo and restore access.</p>
+              </div>
+              <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                <select
+                  value={historyFilter}
+                  onChange={(e) =>
+                    setHistoryFilter(
+                      e.target.value as "ALL" | "opportunity" | "enquiry"
+                    )
+                  }
+                  style={{
+                    height: 40,
+                    padding: "0 14px",
+                    border: "1px solid rgba(18,53,46,.15)",
+                    background: "white",
+                    fontSize: 12,
+                    fontWeight: 500,
+                    color: "var(--admin-ink)",
+                  }}
+                >
+                  <option value="ALL">All Entities</option>
+                  <option value="opportunity">Opportunities</option>
+                  <option value="enquiry">Enquiries & Leads</option>
+                </select>
+
+                <label className="admin-search">
+                  <span>⌕</span>
+                  <input
+                    value={historySearch}
+                    onChange={(e) => setHistorySearch(e.target.value)}
+                    placeholder="Search logs..."
+                  />
+                </label>
+              </div>
+            </div>
+
+            <div className="admin-history-table-head">
+              <span>Time & Admin</span>
+              <span>Action</span>
+              <span>Target</span>
+              <span>Modification Details</span>
+              <span style={{ textAlign: "right" }}>Undo Access</span>
+            </div>
+
+            <div className="admin-history-list">
+              {filteredHistory.map((item) => (
+                <article key={item.id} className="admin-history-row">
+                  <div className="admin-hist-meta">
+                    <span className="admin-hist-time-rel">
+                      {formatTimeAgo(item.createdAt)}
+                    </span>
+                    <small className="admin-hist-time-exact">
+                      {new Date(item.createdAt).toLocaleTimeString("en-IN", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        day: "2-digit",
+                        month: "short",
+                      })}
+                    </small>
+                    <span className="admin-hist-actor">{item.actorEmail}</span>
+                  </div>
+
+                  <div>{renderActionBadge(item.actionType)}</div>
+
+                  <div className="admin-hist-entity">
+                    <b>{item.entityName}</b>
+                    <small>{item.entityType}</small>
+                  </div>
+
+                  <div className="admin-hist-desc">
+                    <p>{item.description}</p>
+                  </div>
+
+                  <div className="admin-hist-actions">
+                    {item.isUndone ? (
+                      <span
+                        className="admin-undone-badge"
+                        title={
+                          item.undoneAt
+                            ? `Reverted on ${new Date(item.undoneAt).toLocaleString("en-IN")}`
+                            : "Reverted"
+                        }
+                      >
+                        ✓ Undone
+                      </span>
+                    ) : item.actionType !== "UNDO" ? (
+                      <button
+                        type="button"
+                        className="admin-undo-btn"
+                        disabled={undoingId === item.id}
+                        onClick={() => handleUndo(item)}
+                      >
+                        {undoingId === item.id ? "Reverting…" : "↶ Undo"}
+                      </button>
+                    ) : (
+                      <span className="admin-revert-badge">—</span>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            {!filteredHistory.length && (
+              <div className="admin-empty">
+                <b>No activity history found</b>
+                <p>
+                  Administrative actions such as creating or editing projects and changing enquiry statuses will be recorded here automatically.
+                </p>
               </div>
             )}
           </div>
