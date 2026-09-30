@@ -20,6 +20,15 @@ export default function ContactPage() {
         lead="Whether you're looking for a property, exploring an investment or bringing an opportunity to market, we're here to help."
       />
 
+      {/* Prefer a call? / Callback Section - immediately below main heading */}
+      <section className="callback-section">
+        <div className="callback-section-container">
+          <Reveal>
+            <CallbackForm />
+          </Reveal>
+        </div>
+      </section>
+
       <section className="content-section">
         <div className="content-grid">
           <Reveal>
@@ -54,15 +63,6 @@ export default function ContactPage() {
           </Reveal>
           <Reveal delay={100}>
             <EnquiryForm />
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Prefer a call? / Callback Section */}
-      <section className="callback-section">
-        <div className="callback-section-container">
-          <Reveal>
-            <CallbackForm />
           </Reveal>
         </div>
       </section>
