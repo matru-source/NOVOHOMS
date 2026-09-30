@@ -1,5 +1,6 @@
-import { EnquiryForm, InfoCards, PageHero } from "@/components/InnerPage";
+import { InfoCards, PageHero } from "@/components/InnerPage";
 import { Reveal } from "@/components/Reveal";
+import { PartnerIntakeForm } from "@/components/PartnerIntakeForm";
 
 export const metadata = { title: "Partner With Us" };
 export default function PartnerPage() {
@@ -43,23 +44,7 @@ export default function PartnerPage() {
           ]}
         />
       </section>
-      <section className="content-section enquiry-section">
-        <Reveal>
-          <p className="eyebrow">Submit your opportunity</p>
-          <h2>
-            Tell us what
-            <br />
-            <em>you have.</em>
-          </h2>
-          <p style={{ color: "rgba(255,255,255,.6)", maxWidth: 440 }}>
-            Share a few details. We&apos;ll consider the fit, ask the right questions and explore how
-            NOVOHOMS can help.
-          </p>
-        </Reveal>
-        <Reveal delay={100}>
-          <EnquiryForm partnership />
-        </Reveal>
-      </section>
+      <PartnerIntakeForm />
     </>
   );
 }

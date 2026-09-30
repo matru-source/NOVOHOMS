@@ -165,6 +165,36 @@
   .article-step-stem{height:28px}
 }
 
-
-
-
+/* Partner Page - Opportunity Intake Form */
+.partner-intake-section{background:var(--paper);padding:clamp(75px,8.5vw,120px) clamp(24px,5vw,60px)}
+.partner-intake-container{max-width:780px;margin:0 auto}
+.partner-intake-header{margin-bottom:46px}
+.partner-intake-eyebrow{font-size:13.5px;font-weight:500;color:var(--gold);font-family:var(--serif);letter-spacing:.04em;margin:0 0 12px}
+.partner-intake-title{font-family:var(--serif);font-size:clamp(36px,4.2vw,52px);line-height:1.1;font-weight:500;color:var(--ink);margin:0 0 16px;letter-spacing:-.02em}
+.partner-intake-lead{font-size:14.5px;line-height:1.6;color:#5e716b;margin:0;max-width:620px}
+.partner-step-block{margin-bottom:38px}
+.partner-step-label{font-size:13.5px;font-weight:500;color:var(--gold);font-family:var(--serif);margin:0 0 12px;display:block}
+.partner-field-label{font-size:12px;font-weight:600;color:var(--ink);margin:0 0 6px;display:block;letter-spacing:.015em}
+.partner-field-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px 34px;margin-bottom:22px}
+.partner-input,.partner-select{width:100%;box-sizing:border-box;background:transparent;border:none;border-bottom:1px solid rgba(16,45,39,.22);border-radius:0;padding:10px 0 12px;font-size:14.5px;color:var(--ink);font-family:var(--sans);transition:border-color .3s ease}
+.partner-input:focus,.partner-select:focus{outline:none;border-bottom:1.5px solid var(--gold)}
+.partner-input::placeholder{color:rgba(94,113,107,.65);font-size:13.5px}
+.partner-select{appearance:none;-webkit-appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23102d27' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 4px center;padding-right:28px}
+.partner-submit-btn{width:100%;margin-top:48px;background:var(--ink);color:#faf7f0;border:none;padding:18px 32px;font-size:15px;font-weight:500;letter-spacing:.02em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .35s var(--ease);border-radius:4px}
+.partner-submit-btn:hover{background:#173f36;transform:translateY(-2px);box-shadow:0 12px 28px rgba(16,45,39,.15)}
+.partner-submit-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.partner-form-error{background:#fdf2f2;color:#b91c1c;border-left:3px solid #b91c1c;padding:12px 16px;font-size:13px;margin-bottom:24px;border-radius:2px}
+.partner-success-card{background:white;border:1px solid rgba(196,152,84,.4);border-radius:12px;padding:50px 36px;text-align:center;box-shadow:0 12px 36px rgba(16,45,39,.06)}
+.partner-success-icon{width:52px;height:52px;border-radius:50%;background:var(--ink);color:var(--gold);display:grid;place-items:center;font-size:22px;font-weight:bold;margin:0 auto 20px}
+.partner-success-title{font-family:var(--serif);font-size:28px;font-weight:500;color:var(--ink);margin:0 0 12px}
+.partner-success-text{font-size:14px;line-height:1.6;color:#5e716b;margin:0 0 28px}
+.partner-success-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.partner-whatsapp-btn{background:#25d366;color:white;padding:12px 22px;font-size:13.5px;font-weight:600;border-radius:4px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;transition:opacity .25s}
+.partner-whatsapp-btn:hover{opacity:.9}
+.partner-reset-btn{background:transparent;color:var(--ink);border:1px solid rgba(16,45,39,.25);padding:12px 22px;font-size:13.5px;font-weight:500;border-radius:4px;cursor:pointer;transition:background .25s}
+.partner-reset-btn:hover{background:rgba(16,45,39,.05)}
+@media(max-width:640px){
+  .partner-field-grid{grid-template-columns:1fr;gap:18px;margin-bottom:18px}
+  .partner-intake-section{padding:65px 20px}
+  .partner-submit-btn{margin-top:36px}
+}
