@@ -1,4 +1,5 @@
 import { CallbackForm } from "@/components/CallbackForm";
+import { ContactQuickStrip } from "@/components/ContactQuickStrip";
 import { EnquiryForm, PageHero } from "@/components/InnerPage";
 import { Reveal } from "@/components/Reveal";
 import { whatsapp } from "@/data/site";
@@ -20,14 +21,7 @@ export default function ContactPage() {
         lead="Whether you're looking for a property, exploring an investment or bringing an opportunity to market, we're here to help."
       />
 
-      {/* Prefer a call? / Callback Section - immediately below main heading */}
-      <section className="callback-section">
-        <div className="callback-section-container">
-          <Reveal>
-            <CallbackForm />
-          </Reveal>
-        </div>
-      </section>
+      <ContactQuickStrip />
 
       <section className="content-section">
         <div className="content-grid">
@@ -63,6 +57,15 @@ export default function ContactPage() {
           </Reveal>
           <Reveal delay={100}>
             <EnquiryForm />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Prefer a call? / Callback Section */}
+      <section className="callback-section">
+        <div className="callback-section-container">
+          <Reveal>
+            <CallbackForm />
           </Reveal>
         </div>
       </section>
