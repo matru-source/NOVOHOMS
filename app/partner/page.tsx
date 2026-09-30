@@ -1,5 +1,6 @@
 import { InfoCards, PageHero } from "@/components/InnerPage";
 import { Reveal } from "@/components/Reveal";
+import { WhoWeWorkWith } from "@/components/WhoWeWorkWith";
 import { PartnerIntakeForm } from "@/components/PartnerIntakeForm";
 
 export const metadata = { title: "Partner With Us" };
@@ -44,6 +45,7 @@ export default function PartnerPage() {
           ]}
         />
       </section>
+      <WhoWeWorkWith />
       <PartnerIntakeForm />
     </>
   );
