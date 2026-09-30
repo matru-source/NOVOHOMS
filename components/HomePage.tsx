@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { ButtonLink } from "./SiteShell";
 import { Reveal, SplitText } from "./Reveal";
 import { PropertyCard } from "./PropertyCard";
+import { NovohomsDifference } from "./NovohomsDifference";
 import { properties, whatsapp } from "@/data/site";
 
 export default function HomePage() {
@@ -192,13 +193,7 @@ export default function HomePage() {
       <div className="property-grid">{liveProperties.slice(0, 3).map((p, i) => <Reveal variant="clip" delay={i * 90} key={p.slug}><PropertyCard property={p} index={i} /></Reveal>)}</div>
     </section>
 
-    <section className="manifesto section">
-      <div className="manifesto-image"><div data-parallax="0.07" /></div>
-      <div className="manifesto-copy">
-        <Reveal><p className="eyebrow">The NOVOHOMS difference</p><h2>More than options.<br /><em>A clearer way forward.</em></h2></Reveal>
-        {[['01','Personal, always','Advice shaped around you—not a generic shortlist.'],['02','Curated with intent','Fewer, stronger opportunities with real context behind them.'],['03','Honest by design','Clear conversations, transparent information and no unnecessary pressure.'],['04','Built for what’s next','Thinking beyond today’s transaction to tomorrow’s value.']].map(([n,t,d],i)=><Reveal delay={i*50} key={n}><div className="principle"><span>{n}</span><div><h3>{t}</h3><p>{d}</p></div></div></Reveal>)}
-      </div>
-    </section>
+    <NovohomsDifference />
 
     <section className="process section">
       <div className="process-watermark" aria-hidden="true">UNDERSTAND · CURATE · EVALUATE · MOVE FORWARD ·</div>
