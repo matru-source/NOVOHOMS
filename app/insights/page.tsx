@@ -11,6 +11,7 @@ const perspectiveGuides = [
     desc: "Clear, practical thinking for understanding Bhubaneswar's changing real estate landscape.",
     image: "/insights-market-intelligence.png",
     alt: "Market intelligence - Bhubaneswar urban landscape",
+    position: "right center",
   },
   {
     num: "02",
@@ -18,6 +19,7 @@ const perspectiveGuides = [
     desc: "Clear, practical thinking for understanding Bhubaneswar's changing real estate landscape.",
     image: "/insights-investment-thinking.png",
     alt: "Investment thinking - property investment and financial growth",
+    position: "70% center",
   },
   {
     num: "03",
@@ -25,6 +27,7 @@ const perspectiveGuides = [
     desc: "Clear, practical thinking for understanding Bhubaneswar's changing real estate landscape.",
     image: "/insights-location-guides.png",
     alt: "Location guides - prime corridors and masterplans",
+    position: "75% center",
   },
   {
     num: "04",
@@ -32,6 +35,7 @@ const perspectiveGuides = [
     desc: "Clear, practical thinking for understanding Bhubaneswar's changing real estate landscape.",
     image: "/insights-buying-guides.png",
     alt: "Buying guides - residential and commercial properties",
+    position: "32% center",
   },
 ];
 
@@ -94,6 +98,7 @@ export default function InsightsPage() {
                     src={item.image}
                     alt={item.alt}
                     loading="lazy"
+                    style={{ objectPosition: item.position }}
                     className="perspective-card-img"
                   />
                 </div>
@@ -106,11 +111,11 @@ export default function InsightsPage() {
                     className="perspective-curve-svg"
                   >
                     <path
-                      d="M -1,-1 L 44,-1 L 44,50 C 44,70 33,98 28,100 L -1,100 Z"
+                      d="M -1,-1 L 44,-1 L 44,50 C 44,75 34,95 28.5,100 L -1,100 Z"
                       fill="#faf7f0"
                     />
                     <path
-                      d="M 44,0 L 44,50 C 44,70 33,98 28,100"
+                      d="M 44,0 L 44,50 C 44,75 34,95 28.5,100"
                       fill="none"
                       stroke="#c49854"
                       strokeWidth="1.5"
