@@ -1,7 +1,122 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, useRef, useEffect, type FormEvent } from "react";
 import { Reveal } from "./Reveal";
+
+interface CustomSelectProps {
+  value: string;
+  onChange: (val: string) => void;
+  options: string[];
+  placeholder?: string;
+  className?: string;
+  ariaLabel?: string;
+}
+
+function CustomSelect({
+  value,
+  onChange,
+  options,
+  placeholder,
+  className = "",
+  ariaLabel,
+}: CustomSelectProps) {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
+
+  return (
+    <div className={`partner-custom-select-wrap ${className}`} ref={containerRef}>
+      <button
+        type="button"
+        className={`partner-custom-select-trigger ${open ? "is-open" : ""}`}
+        onClick={() => setOpen((prev) => !prev)}
+        aria-expanded={open}
+        aria-label={ariaLabel}
+      >
+        <span className={value ? "select-val" : "select-placeholder"}>
+          {value || placeholder || "Select option"}
+        </span>
+        <svg
+          className={`select-chevron ${open ? "is-flipped" : ""}`}
+          width="13"
+          height="13"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#102d27"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
+
+      {open && (
+        <ul className="partner-custom-select-menu" role="listbox">
+          {options.map((opt) => {
+            const isSelected = opt === value;
+            return (
+              <li
+                key={opt}
+                role="option"
+                aria-selected={isSelected}
+                className={`partner-select-option ${isSelected ? "is-selected" : ""}`}
+                onClick={() => {
+                  onChange(opt);
+                  setOpen(false);
+                }}
+              >
+                {opt}
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+const MARKET_OPTIONS = [
+  "Residential Project",
+  "Commercial Project",
+  "Mixed-Use Project",
+  "Residential Property",
+  "Commercial Property",
+  "Land",
+  "Plot",
+  "Investment Opportunity",
+  "Other",
+];
+
+const STATUS_OPTIONS = [
+  "Upcoming",
+  "Under Development",
+  "Ready to Move",
+  "Existing Property",
+  "Unsold Inventory",
+];
+
+const NEED_OPTIONS = [
+  "Marketing & Sales Support",
+  "Lead Generation",
+  "Property Listing",
+  "Project Promotion",
+  "Buyer / Investor Connections",
+  "Strategic Advisory",
+  "Partnership & Collaborations",
+];
 
 export function PartnerIntakeForm() {
   const [marketType, setMarketType] = useState("Residential Project");
@@ -15,7 +130,6 @@ export function PartnerIntakeForm() {
   const [companyName, setCompanyName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [notes, setNotes] = useState("");
 
   const [busy, setBusy] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -39,7 +153,6 @@ export function PartnerIntakeForm() {
       `Current Status: ${currentStatus}`,
       `Need from NOVOHOMS: ${need}`,
       companyName ? `Company: ${companyName.trim()}` : null,
-      notes ? `Additional Notes: ${notes.trim()}` : null,
     ]
       .filter(Boolean)
       .join("\n");
@@ -78,13 +191,20 @@ export function PartnerIntakeForm() {
   return (
     <section className="partner-intake-section">
       <div className="partner-intake-container">
+        {/* Centered Editorial Header */}
         <Reveal>
           <div className="partner-intake-header">
-            <p className="partner-intake-eyebrow">Submit your opportunity</p>
-            <h2 className="partner-intake-title">Tell Us What You Have.</h2>
+            <div className="partner-intake-eyebrow-wrap">
+              <span className="partner-intake-eyebrow">SUBMIT YOUR OPPORTUNITY</span>
+              <span className="partner-intake-dash" />
+            </div>
+            <h2 className="partner-intake-title">
+              Tell Us What You <em>Have.</em>
+            </h2>
             <p className="partner-intake-lead">
-              Share the details and we&apos;ll explore how NOVOHOMS can help bring it to the right
-              audience.
+              Share a few details and we&apos;ll explore how NOVOHOMS can help
+              <br />
+              bring it to the right audience.
             </p>
           </div>
         </Reveal>
@@ -93,13 +213,13 @@ export function PartnerIntakeForm() {
           <Reveal>
             <div className="partner-success-card">
               <div className="partner-success-icon">✓</div>
-              <p className="partner-intake-eyebrow" style={{ textAlign: "center" }}>
+              <p className="partner-intake-eyebrow" style={{ textAlign: "center", marginBottom: 8 }}>
                 Opportunity Received
               </p>
               <h3 className="partner-success-title">Thank you, {fullName}.</h3>
               <p className="partner-success-text">
                 We have received your submission for <strong>{projectName || marketType}</strong>. Our
-                leadership team will review the details and reach out within 24 to 48 hours.
+                team will review the details and reach out within 24 to 48 hours.
               </p>
               <div className="partner-success-actions">
                 <a
@@ -119,7 +239,6 @@ export function PartnerIntakeForm() {
                     setSize("");
                     setPrice("");
                     setCompanyName("");
-                    setNotes("");
                   }}
                   className="partner-reset-btn"
                 >
@@ -137,215 +256,222 @@ export function PartnerIntakeForm() {
                 </div>
               )}
 
-              {/* Step 1 */}
-              <div className="partner-step-block">
-                <span className="partner-step-label">Step 1</span>
-                <label htmlFor="partner-market-type" className="partner-field-label">
-                  What would you like to bring to market?
-                </label>
-                <select
-                  id="partner-market-type"
-                  value={marketType}
-                  onChange={(e) => setMarketType(e.target.value)}
-                  className="partner-select"
-                >
-                  <option value="Residential Project">Residential Project</option>
-                  <option value="Commercial Project">Commercial Project</option>
-                  <option value="Plotted Development / Land">Plotted Development / Land</option>
-                  <option value="Luxury Villa / Residence">Luxury Villa / Residence</option>
-                  <option value="Mixed-Use Development">Mixed-Use Development</option>
-                  <option value="Other Opportunity">Other Opportunity</option>
-                </select>
+              {/* Step 01 */}
+              <div className="partner-step-card">
+                <div className="partner-step-split-row">
+                  <div className="partner-step-info-group">
+                    <span className="partner-step-badge">01</span>
+                    <span className="partner-step-vdivider" />
+                    <div className="partner-step-titles">
+                      <h3 className="partner-step-heading">
+                        What would you like to bring to market?
+                      </h3>
+                      <p className="partner-step-sub">
+                        Select the option that best describes your opportunity.
+                      </p>
+                    </div>
+                  </div>
+                  <CustomSelect
+                    value={marketType}
+                    onChange={setMarketType}
+                    options={MARKET_OPTIONS}
+                    ariaLabel="What would you like to bring to market?"
+                  />
+                </div>
               </div>
 
-              {/* Step 2 */}
-              <div className="partner-step-block">
-                <span className="partner-step-label">Step 2 — Tell us about it</span>
-                <div className="partner-field-grid">
-                  <div>
-                    <label htmlFor="partner-project-name" className="partner-field-label">
+              {/* Step 02 */}
+              <div className="partner-step-card">
+                <div className="partner-step-info-group">
+                  <span className="partner-step-badge">02</span>
+                  <span className="partner-step-vdivider" />
+                  <div className="partner-step-titles">
+                    <h3 className="partner-step-heading">Tell us about it</h3>
+                    <p className="partner-step-sub">Help us understand the key details.</p>
+                  </div>
+                </div>
+
+                <div className="partner-step-inner-grid">
+                  <div className="partner-inner-field">
+                    <label htmlFor="partner-project-name" className="partner-inner-label">
                       Property / Project Name
                     </label>
                     <input
                       id="partner-project-name"
                       type="text"
-                      placeholder="Property / Project Name"
+                      placeholder="Enter property or project name"
                       value={projectName}
                       onChange={(e) => setProjectName(e.target.value)}
-                      className="partner-input"
+                      className="partner-inner-input"
                     />
                   </div>
-                  <div>
-                    <label htmlFor="partner-location" className="partner-field-label">
+                  <div className="partner-inner-field">
+                    <label htmlFor="partner-location" className="partner-inner-label">
                       Location
                     </label>
                     <input
                       id="partner-location"
                       type="text"
-                      placeholder="Location"
+                      placeholder="Enter location"
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
-                      className="partner-input"
+                      className="partner-inner-input"
                     />
                   </div>
-                </div>
-
-                <div className="partner-field-grid" style={{ marginBottom: 0 }}>
-                  <div>
-                    <label htmlFor="partner-size" className="partner-field-label">
+                  <div className="partner-inner-field">
+                    <label htmlFor="partner-size" className="partner-inner-label">
                       Approximate Size
                     </label>
                     <input
                       id="partner-size"
                       type="text"
-                      placeholder="Approximate Size"
+                      placeholder="Enter size (sq ft / acres etc.)"
                       value={size}
                       onChange={(e) => setSize(e.target.value)}
-                      className="partner-input"
+                      className="partner-inner-input"
                     />
                   </div>
-                  <div>
-                    <label htmlFor="partner-price" className="partner-field-label">
+                  <div className="partner-inner-field">
+                    <label htmlFor="partner-price" className="partner-inner-label">
                       Expected Price
                     </label>
                     <input
                       id="partner-price"
                       type="text"
-                      placeholder="Expected Price / Price Range (Optional)"
+                      placeholder="Enter expected price or range (Optional)"
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
-                      className="partner-input"
+                      className="partner-inner-input"
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Step 3 */}
-              <div className="partner-step-block">
-                <span className="partner-step-label">Step 3 — Current status</span>
-                <label htmlFor="partner-status" className="partner-field-label">
-                  Current Status
-                </label>
-                <select
-                  id="partner-status"
-                  value={currentStatus}
-                  onChange={(e) => setCurrentStatus(e.target.value)}
-                  className="partner-select"
-                >
-                  <option value="Upcoming">Upcoming</option>
-                  <option value="Pre-Launch">Pre-Launch</option>
-                  <option value="Under Construction">Under Construction</option>
-                  <option value="Ready to Move">Ready to Move</option>
-                  <option value="Planning Stage">Planning Stage</option>
-                </select>
+              {/* Step 03 */}
+              <div className="partner-step-card">
+                <div className="partner-step-split-row">
+                  <div className="partner-step-info-group">
+                    <span className="partner-step-badge">03</span>
+                    <span className="partner-step-vdivider" />
+                    <div className="partner-step-titles">
+                      <h3 className="partner-step-heading">Current status</h3>
+                      <p className="partner-step-sub">Where are you in the process?</p>
+                    </div>
+                  </div>
+                  <CustomSelect
+                    value={currentStatus}
+                    onChange={setCurrentStatus}
+                    options={STATUS_OPTIONS}
+                    placeholder="Select current status"
+                    className="wide"
+                    ariaLabel="Current status"
+                  />
+                </div>
               </div>
 
-              {/* Step 4 */}
-              <div className="partner-step-block">
-                <span className="partner-step-label">Step 4 — What do you need?</span>
-                <label htmlFor="partner-need" className="partner-field-label">
-                  What do you need from NOVOHOMS?
-                </label>
-                <select
-                  id="partner-need"
-                  value={need}
-                  onChange={(e) => setNeed(e.target.value)}
-                  className="partner-select"
-                >
-                  <option value="Marketing & Sales Support">Marketing & Sales Support</option>
-                  <option value="Exclusive Mandate">Exclusive Mandate</option>
-                  <option value="Strategic Advisory & Positioning">Strategic Advisory & Positioning</option>
-                  <option value="Investor Outreach">Investor Outreach</option>
-                  <option value="End-to-End Project Launch">End-to-End Project Launch</option>
-                </select>
+              {/* Step 04 */}
+              <div className="partner-step-card">
+                <div className="partner-step-split-row">
+                  <div className="partner-step-info-group">
+                    <span className="partner-step-badge">04</span>
+                    <span className="partner-step-vdivider" />
+                    <div className="partner-step-titles">
+                      <h3 className="partner-step-heading">
+                        What do you need from NOVOHOMS?
+                      </h3>
+                      <p className="partner-step-sub">Select the support you&apos;re looking for.</p>
+                    </div>
+                  </div>
+                  <CustomSelect
+                    value={need}
+                    onChange={setNeed}
+                    options={NEED_OPTIONS}
+                    className="wide"
+                    ariaLabel="What do you need from NOVOHOMS?"
+                  />
+                </div>
               </div>
 
-              {/* Step 5 */}
-              <div className="partner-step-block">
-                <span className="partner-step-label">Step 5 — Your contact details</span>
-                <div className="partner-field-grid">
-                  <div>
-                    <label htmlFor="partner-full-name" className="partner-field-label">
+              {/* Step 05 */}
+              <div className="partner-step-card">
+                <div className="partner-step-info-group">
+                  <span className="partner-step-badge">05</span>
+                  <span className="partner-step-vdivider" />
+                  <div className="partner-step-titles">
+                    <h3 className="partner-step-heading">Your contact details</h3>
+                    <p className="partner-step-sub">Let&apos;s stay in touch.</p>
+                  </div>
+                </div>
+
+                <div className="partner-step-inner-grid">
+                  <div className="partner-inner-field">
+                    <label htmlFor="partner-full-name" className="partner-inner-label">
                       Full Name *
                     </label>
                     <input
                       id="partner-full-name"
                       type="text"
-                      placeholder="Full Name"
+                      placeholder="Enter your full name"
                       required
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      className="partner-input"
+                      className="partner-inner-input"
                     />
                   </div>
-                  <div>
-                    <label htmlFor="partner-company" className="partner-field-label">
+                  <div className="partner-inner-field">
+                    <label htmlFor="partner-company" className="partner-inner-label">
                       Company Name
                     </label>
                     <input
                       id="partner-company"
                       type="text"
-                      placeholder="Company Name (Optional)"
+                      placeholder="Enter company name (Optional)"
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
-                      className="partner-input"
+                      className="partner-inner-input"
                     />
                   </div>
-                </div>
-
-                <div className="partner-field-grid">
-                  <div>
-                    <label htmlFor="partner-phone" className="partner-field-label">
+                  <div className="partner-inner-field">
+                    <label htmlFor="partner-phone" className="partner-inner-label">
                       Phone Number *
                     </label>
                     <input
                       id="partner-phone"
                       type="tel"
-                      placeholder="Phone Number"
+                      placeholder="Enter phone number"
                       required
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className="partner-input"
+                      className="partner-inner-input"
                     />
                   </div>
-                  <div>
-                    <label htmlFor="partner-email" className="partner-field-label">
-                      Email Address
+                  <div className="partner-inner-field">
+                    <label htmlFor="partner-email" className="partner-inner-label">
+                      Email Address *
                     </label>
                     <input
                       id="partner-email"
                       type="email"
-                      placeholder="Email Address"
+                      placeholder="Enter email address"
+                      required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="partner-input"
+                      className="partner-inner-input"
                     />
                   </div>
-                </div>
-
-                <div style={{ marginTop: 24 }}>
-                  <label htmlFor="partner-notes" className="partner-field-label">
-                    Anything else?
-                  </label>
-                  <input
-                    id="partner-notes"
-                    type="text"
-                    placeholder="Anything else you'd like to share?"
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    className="partner-input"
-                  />
                 </div>
               </div>
 
               {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={busy}
-                className="partner-submit-btn"
-              >
-                {busy ? "Submitting Opportunity..." : "Explore a Partnership ↗"}
-              </button>
+              <div className="partner-submit-row">
+                <button
+                  type="submit"
+                  disabled={busy}
+                  className="partner-main-submit-btn"
+                >
+                  {busy ? "Submitting Opportunity..." : "Explore a Partnership →"}
+                </button>
+              </div>
             </form>
           </Reveal>
         )}
