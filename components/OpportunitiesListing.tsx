@@ -15,7 +15,9 @@ export function OpportunitiesListing({
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window === "undefined") return;
+
+    const syncCategory = () => {
       const params = new URLSearchParams(window.location.search);
       const cat = params.get("category");
       if (cat) {
@@ -27,7 +29,15 @@ export function OpportunitiesListing({
         );
         if (found) setSelectedCategory(found);
       }
-    }
+    };
+
+    syncCategory();
+    window.addEventListener("popstate", syncCategory);
+    window.addEventListener("hashchange", syncCategory);
+    return () => {
+      window.removeEventListener("popstate", syncCategory);
+      window.removeEventListener("hashchange", syncCategory);
+    };
   }, []);
 
   const filtered = useMemo(() => {
@@ -44,7 +54,7 @@ export function OpportunitiesListing({
   }, [properties, selectedCategory]);
 
   return (
-    <section className="properties-section section">
+    <section className="properties-section section" id="opportunities-list">
       <div className="section-heading row">
         <Reveal>
           <p className="eyebrow">

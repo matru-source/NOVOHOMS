@@ -374,3 +374,175 @@
   .partner-ways-grid{grid-template-columns:1fr;max-width:580px;margin:0 auto}
 }
 
+/* Opportunities Page - Expanding Portfolio Cards with Background Images */
+.portfolio-expansion-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(20px, 2.2vw, 32px);
+  margin-top: 55px;
+}
+
+.portfolio-expansion-card {
+  position: relative;
+  min-height: 420px;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(28px, 3.2vw, 42px);
+  text-decoration: none;
+  border: 1px solid rgba(18, 53, 46, 0.14);
+  background: #06231c;
+  color: white;
+  isolation: isolate;
+  transition: transform 0.55s var(--ease), box-shadow 0.55s var(--ease), border-color 0.4s ease;
+  box-shadow: 0 16px 40px rgba(6, 35, 28, 0.08);
+}
+
+.portfolio-expansion-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 26px 64px rgba(6, 35, 28, 0.26);
+  border-color: rgba(196, 152, 84, 0.55);
+}
+
+.portfolio-expansion-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+  transform: scale(1.01);
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+}
+
+.portfolio-expansion-card:hover .portfolio-expansion-bg {
+  transform: scale(1.07);
+}
+
+.portfolio-expansion-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 35, 28, 0.35) 0%,
+    rgba(6, 35, 28, 0.62) 42%,
+    rgba(6, 35, 28, 0.94) 100%
+  );
+  transition: background 0.45s ease;
+}
+
+.portfolio-expansion-card:hover .portfolio-expansion-overlay {
+  background: linear-gradient(
+    180deg,
+    rgba(6, 35, 28, 0.22) 0%,
+    rgba(6, 35, 28, 0.52) 42%,
+    rgba(6, 35, 28, 0.91) 100%
+  );
+}
+
+.portfolio-expansion-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.portfolio-expansion-num {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--gold);
+  letter-spacing: 0.06em;
+  display: inline-block;
+}
+
+.portfolio-expansion-arrow {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(6, 35, 28, 0.5);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 14px;
+  transition: transform 0.35s var(--ease), background 0.35s ease, border-color 0.35s ease, color 0.35s ease;
+}
+
+.portfolio-expansion-card:hover .portfolio-expansion-arrow {
+  transform: translate(3px, -3px);
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--ink);
+}
+
+.portfolio-expansion-bottom {
+  position: relative;
+  z-index: 2;
+}
+
+.portfolio-expansion-bottom h3 {
+  font-family: var(--serif);
+  font-size: clamp(26px, 2.2vw, 34px);
+  font-weight: 500;
+  line-height: 1.15;
+  color: #ffffff;
+  margin: 0 0 12px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+  letter-spacing: -0.015em;
+}
+
+.portfolio-expansion-bottom p {
+  font-size: 13.5px;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, 0.88);
+  margin: 0 0 24px;
+  max-width: 440px;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+}
+
+.portfolio-expansion-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+  transition: color 0.3s ease;
+}
+
+.portfolio-expansion-cta b {
+  font-size: 14px;
+  transition: transform 0.3s var(--ease);
+  display: inline-block;
+  color: var(--gold);
+}
+
+.portfolio-expansion-card:hover .portfolio-expansion-cta {
+  color: var(--gold);
+}
+
+.portfolio-expansion-card:hover .portfolio-expansion-cta b {
+  transform: translate(3px, -3px);
+}
+
+@media (max-width: 1080px) {
+  .portfolio-expansion-grid {
+    grid-template-columns: 1fr;
+    max-width: 600px;
+    margin: 45px auto 0;
+  }
+  .portfolio-expansion-card {
+    min-height: 340px;
+  }
+}
+
+

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { PageHero, CTA } from "@/components/InnerPage";
 import { OpportunitiesListing } from "@/components/OpportunitiesListing";
 import { Reveal } from "@/components/Reveal";
@@ -6,6 +7,36 @@ import { ensureInitialOpportunities, listOpportunities, ManagedOpportunity } fro
 
 export const metadata = { title: "Opportunities" };
 export const dynamic = "force-dynamic";
+
+const expandingCategories = [
+  {
+    num: "01",
+    title: "Land & plots",
+    desc: "Tell us what you need and we'll curate relevant opportunities across Bhubaneswar and beyond.",
+    image: "/portfolio/land-plots.png",
+    alt: "Master-planned land and residential plots in Bhubaneswar",
+    href: "/opportunities?category=Land%20%26%20plots#opportunities-list",
+    actionLabel: "Explore land & plots",
+  },
+  {
+    num: "02",
+    title: "Commercial spaces",
+    desc: "Tell us what you need and we'll curate relevant opportunities across Bhubaneswar and beyond.",
+    image: "/portfolio/commercial-spaces.png",
+    alt: "Modern premium commercial office and retail spaces in Bhubaneswar",
+    href: "/opportunities?category=Commercial#opportunities-list",
+    actionLabel: "Explore commercial",
+  },
+  {
+    num: "03",
+    title: "Investment opportunities",
+    desc: "Tell us what you need and we'll curate relevant opportunities across Bhubaneswar and beyond.",
+    image: "/portfolio/investment-opportunities.webp",
+    alt: "High-potential real estate and development investments in Bhubaneswar",
+    href: "/opportunities?category=Investment#opportunities-list",
+    actionLabel: "Explore investments",
+  },
+];
 
 export default async function OpportunitiesPage() {
   let available: ManagedOpportunity[] = properties.map((p, i) => ({
@@ -48,19 +79,32 @@ export default async function OpportunitiesPage() {
             <em>Investment.</em>
           </h2>
         </Reveal>
-        <div style={{ height: 55 }} />
-        <div className="card-grid">
-          {["Land & plots", "Commercial spaces", "Investment opportunities"].map((x, i) => (
-            <article className="info-card" key={x}>
-              <span>0{i + 1}</span>
-              <div>
-                <h3>{x}</h3>
-                <p>
-                  Tell us what you need and we&apos;ll curate relevant opportunities across
-                  Bhubaneswar and beyond.
-                </p>
-              </div>
-            </article>
+        <div className="portfolio-expansion-grid">
+          {expandingCategories.map((item, i) => (
+            <Reveal delay={i * 90} key={item.title} variant="clip">
+              <Link href={item.href} className="portfolio-expansion-card">
+                <img
+                  src={item.image}
+                  alt={item.alt}
+                  className="portfolio-expansion-bg"
+                  loading="lazy"
+                />
+                <div className="portfolio-expansion-overlay" />
+                <div className="portfolio-expansion-top">
+                  <span className="portfolio-expansion-num">{item.num}</span>
+                  <span className="portfolio-expansion-arrow" aria-hidden="true">
+                    ↗
+                  </span>
+                </div>
+                <div className="portfolio-expansion-bottom">
+                  <h3>{item.title}</h3>
+                  <p>{item.desc}</p>
+                  <span className="portfolio-expansion-cta">
+                    {item.actionLabel} <b>↗</b>
+                  </span>
+                </div>
+              </Link>
+            </Reveal>
           ))}
         </div>
       </section>
