@@ -59,11 +59,6 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        <div className="hero-index">
-          <span>01</span>
-          <i />
-          <span>06</span>
-        </div>
         <a
           href="#journey"
           className={`scroll-cue ${scrolled ? "is-hidden" : ""}`}
