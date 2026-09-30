@@ -105,6 +105,22 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
   if (pathname.startsWith("/admin")) return <>{children}</>;
 
+  const allNavLinks = [
+    ...nav,
+    ["Contact", "/contact"] as const,
+  ];
+
+  const isNavActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    if (href === "/opportunities") {
+      return pathname.startsWith("/opportunities") || pathname.startsWith("/properties");
+    }
+    if (href === "/insights") {
+      return pathname.startsWith("/insights");
+    }
+    return pathname === href || pathname.startsWith(href + "/");
+  };
+
   return (
     <>
       <MotionLayer />
@@ -115,14 +131,20 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <span>NOVOHOMS</span>
         </Link>
         <nav className={open ? "open" : ""} aria-label="Main navigation">
-          {nav.map(([label, href]) => (
-            <Link href={href} key={href} onClick={() => setOpen(false)}>
-              <MotionLabel>{label}</MotionLabel>
-            </Link>
-          ))}
-          <Link href="/contact" onClick={() => setOpen(false)}>
-            <MotionLabel>Contact</MotionLabel>
-          </Link>
+          {allNavLinks.map(([label, href]) => {
+            const active = isNavActive(href);
+            return (
+              <Link
+                href={href}
+                key={href}
+                className={active ? "active" : ""}
+                aria-current={active ? "page" : undefined}
+                onClick={() => setOpen(false)}
+              >
+                <MotionLabel>{label}</MotionLabel>
+              </Link>
+            );
+          })}
         </nav>
         <div className="header-actions">
           <a
