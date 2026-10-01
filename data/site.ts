@@ -12,7 +12,7 @@ export type Property = {
   highlights: { title: string; text: string }[];
 };
 
-const asset = (path: string) => `https://novohoms.com/airo-assets/images/${path}`;
+const asset = (path: string) => `/${path}.webp`;
 
 export const properties: Property[] = [
   {
