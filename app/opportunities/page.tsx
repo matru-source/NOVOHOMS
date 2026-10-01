@@ -10,27 +10,24 @@ export const dynamic = "force-dynamic";
 
 const expandingCategories = [
   {
-    num: "01",
     title: "Land & plots",
-    desc: "Tell us what you need and we'll curate relevant opportunities across Bhubaneswar and beyond.",
+    desc: "Curated parcels and residential layouts.",
     image: "/portfolio/land-plots.webp",
     alt: "Master-planned land and residential plots in Bhubaneswar",
     href: "/opportunities?category=Land%20%26%20plots#opportunities-list",
     actionLabel: "Explore land & plots",
   },
   {
-    num: "02",
     title: "Commercial spaces",
-    desc: "Tell us what you need and we'll curate relevant opportunities across Bhubaneswar and beyond.",
+    desc: "Prime corporate offices and retail destinations.",
     image: "/portfolio/commercial-spaces.webp",
     alt: "Modern premium commercial office and retail spaces in Bhubaneswar",
     href: "/opportunities?category=Commercial#opportunities-list",
     actionLabel: "Explore commercial",
   },
   {
-    num: "03",
     title: "Investment opportunities",
-    desc: "Tell us what you need and we'll curate relevant opportunities across Bhubaneswar and beyond.",
+    desc: "Strategic capital growth and yield assets.",
     image: "/portfolio/investment-opportunities.webp",
     alt: "High-potential real estate and development investments in Bhubaneswar",
     href: "/opportunities?category=Investment#opportunities-list",
@@ -88,19 +85,14 @@ export default async function OpportunitiesPage() {
                   alt={item.alt}
                   className="portfolio-expansion-bg"
                   loading="lazy"
+                  decoding="async"
                 />
                 <div className="portfolio-expansion-overlay" />
-                <div className="portfolio-expansion-top">
-                  <span className="portfolio-expansion-num">{item.num}</span>
-                  <span className="portfolio-expansion-arrow" aria-hidden="true">
-                    ↗
-                  </span>
-                </div>
                 <div className="portfolio-expansion-bottom">
                   <h3>{item.title}</h3>
                   <p>{item.desc}</p>
                   <span className="portfolio-expansion-cta">
-                    {item.actionLabel} <b>↗</b>
+                    {item.actionLabel}
                   </span>
                 </div>
               </Link>
