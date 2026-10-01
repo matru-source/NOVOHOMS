@@ -1,15 +1,19 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { whatsapp } from "@/data/site";
 
+const MAX_PAGE_ARRIVALS = 3;
+
 export function AssistantPeek() {
+  const pathname = usePathname();
   // stage: 'idle' | 'monkey' | 'message' | 'retreating'
   const [stage, setStage] = useState<"idle" | "monkey" | "message" | "retreating">("idle");
   const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
   const messageTimerRef = useRef<NodeJS.Timeout | null>(null);
   const dismissTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const isFirstLoadRef = useRef(true);
+  const appearanceCountRef = useRef(0);
 
   // Clear all pending timers
   const clearTimers = () => {
@@ -20,8 +24,13 @@ export function AssistantPeek() {
 
   // Schedule the monkey appearance after idle duration without scrolling
   const scheduleAppearance = (delayMs: number) => {
+    if (appearanceCountRef.current >= MAX_PAGE_ARRIVALS) return;
     clearTimers();
+
     idleTimerRef.current = setTimeout(() => {
+      if (appearanceCountRef.current >= MAX_PAGE_ARRIVALS) return;
+      appearanceCountRef.current += 1;
+
       // 1. Monkey appears from the right
       setStage("monkey");
 
@@ -31,7 +40,7 @@ export function AssistantPeek() {
 
         // 3. Auto-retreat after 4.5 seconds if no click or scroll
         dismissTimerRef.current = setTimeout(() => {
-          retreat(true);
+          retreat(appearanceCountRef.current < MAX_PAGE_ARRIVALS);
         }, 4500);
       }, 1000);
     }, delayMs);
@@ -44,18 +53,27 @@ export function AssistantPeek() {
     setStage("retreating");
     setTimeout(() => {
       setStage("idle");
-      // If user remains idle without scrolling, schedule next appearance in 10s
-      if (scheduleNext) {
+      // If user remains idle without scrolling, schedule next appearance in 10s (max 3 per page)
+      if (scheduleNext && appearanceCountRef.current < MAX_PAGE_ARRIVALS) {
         scheduleAppearance(10000);
       }
     }, 550);
   };
 
+  // Reset count and start timer whenever user navigates to a new page
   useEffect(() => {
-    // Initial arrival: trigger after 5 seconds of staying without scrolling
-    scheduleAppearance(isFirstLoadRef.current ? 5000 : 10000);
-    isFirstLoadRef.current = false;
+    appearanceCountRef.current = 0;
+    setStage("idle");
+    clearTimers();
+    scheduleAppearance(5000);
 
+    return () => {
+      clearTimers();
+    };
+  }, [pathname]);
+
+  // Handle scroll events
+  useEffect(() => {
     const handleScroll = () => {
       // If monkey or message is currently shown, dismiss it immediately
       setStage((prev) => {
@@ -65,8 +83,10 @@ export function AssistantPeek() {
         return prev;
       });
 
-      // Whenever user scrolls, reset and wait for 10 seconds of idle before showing again
-      scheduleAppearance(10000);
+      // If under maximum arrivals on this page, wait for 10 seconds of idle
+      if (appearanceCountRef.current < MAX_PAGE_ARRIVALS) {
+        scheduleAppearance(10000);
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -78,7 +98,7 @@ export function AssistantPeek() {
 
   const handleClick = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
-    retreat(true);
+    retreat(false);
     const assistantWa =
       "https://wa.me/919777958275?text=" +
       encodeURIComponent("Hi NOVOHOMS, I'd like to speak with an assistant.");
