@@ -23,8 +23,8 @@ export default function ContactPage() {
 
       <ContactQuickStrip />
 
-      <section className="content-section">
-        <div className="content-grid">
+      <section className="content-section contact-section">
+        <div className="content-grid contact-grid-layout">
           <Reveal>
             <p className="eyebrow">Direct connections</p>
             <h2>
@@ -55,8 +55,17 @@ export default function ContactPage() {
               </a>
             </div>
           </Reveal>
-          <Reveal delay={100}>
-            <EnquiryForm />
+          <Reveal delay={100} className="contact-form-reveal">
+            <div className="contact-form-wrapper">
+              <img
+                src="/contact/advisor-character.webp"
+                alt="NOVOHOMS Advisor"
+                className="contact-advisor-character"
+                loading="eager"
+                decoding="async"
+              />
+              <EnquiryForm />
+            </div>
           </Reveal>
         </div>
       </section>
