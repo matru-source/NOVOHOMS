@@ -9,69 +9,79 @@ export function AssistantPeek() {
   const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
   const messageTimerRef = useRef<NodeJS.Timeout | null>(null);
   const dismissTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const hasTriggeredRef = useRef(false);
+  const isFirstLoadRef = useRef(true);
 
-  const startIdleTimer = () => {
-    if (hasTriggeredRef.current) return;
+  // Clear all pending timers
+  const clearTimers = () => {
     if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    if (messageTimerRef.current) clearTimeout(messageTimerRef.current);
+    if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);
+  };
 
+  // Schedule the monkey appearance after idle duration without scrolling
+  const scheduleAppearance = (delayMs: number) => {
+    clearTimers();
     idleTimerRef.current = setTimeout(() => {
-      // User has stayed 5s without scrolling
+      // 1. Monkey appears from the right
       setStage("monkey");
-      hasTriggeredRef.current = true;
 
-      // After 2 seconds, deliver the message (image 2)
+      // 2. Exactly 1 second later: deliver speech bubble message
       messageTimerRef.current = setTimeout(() => {
         setStage("message");
 
-        // After 3 seconds of showing the message, slightly retreat/go away
+        // 3. Auto-retreat after 4.5 seconds if no click or scroll
         dismissTimerRef.current = setTimeout(() => {
-          retreat();
-        }, 3000);
-      }, 2000);
-    }, 5000);
+          retreat(true);
+        }, 4500);
+      }, 1000);
+    }, delayMs);
   };
 
-  const retreat = () => {
+  const retreat = (scheduleNext = true) => {
     if (messageTimerRef.current) clearTimeout(messageTimerRef.current);
     if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);
 
     setStage("retreating");
     setTimeout(() => {
       setStage("idle");
-      // Allow re-triggering after a graceful cooldown (45s of fresh browsing)
-      setTimeout(() => {
-        hasTriggeredRef.current = false;
-      }, 45000);
-    }, 600);
+      // If user remains idle without scrolling, schedule next appearance in 10s
+      if (scheduleNext) {
+        scheduleAppearance(10000);
+      }
+    }, 550);
   };
 
   useEffect(() => {
-    // Start initial 5-second countdown
-    startIdleTimer();
+    // Initial arrival: trigger after 5 seconds of staying without scrolling
+    scheduleAppearance(isFirstLoadRef.current ? 5000 : 10000);
+    isFirstLoadRef.current = false;
 
     const handleScroll = () => {
-      // If currently peeking or message delivered, dismiss on scroll
-      if (stage === "monkey" || stage === "message") {
-        retreat();
-      } else if (stage === "idle" && !hasTriggeredRef.current) {
-        // Reset 5s countdown on scroll
-        startIdleTimer();
-      }
+      // If monkey or message is currently shown, dismiss it immediately
+      setStage((prev) => {
+        if (prev === "monkey" || prev === "message") {
+          retreat(false);
+        }
+        return prev;
+      });
+
+      // Whenever user scrolls, reset and wait for 10 seconds of idle before showing again
+      scheduleAppearance(10000);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-      if (messageTimerRef.current) clearTimeout(messageTimerRef.current);
-      if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);
+      clearTimers();
     };
-  }, [stage]);
+  }, []);
 
-  const handleClick = () => {
-    retreat();
-    const assistantWa = "https://wa.me/919777958275?text=" + encodeURIComponent("Hi NOVOHOMS, I'd like to speak with an assistant.");
+  const handleClick = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    retreat(true);
+    const assistantWa =
+      "https://wa.me/919777958275?text=" +
+      encodeURIComponent("Hi NOVOHOMS, I'd like to speak with an assistant.");
     window.open(assistantWa, "_blank");
   };
 
@@ -90,8 +100,11 @@ export function AssistantPeek() {
         }
       }}
     >
-      {/* Speech Bubble (Delivered 2 seconds after monkey appears) */}
-      <div className={`assistant-bubble-frame ${stage === "message" ? "is-visible" : ""}`}>
+      {/* Speech Bubble (Delivered 1 second after monkey appears) */}
+      <div
+        className={`assistant-bubble-frame ${stage === "message" ? "is-visible" : ""}`}
+        onClick={handleClick}
+      >
         <img
           src="/assistant-bubble.webp"
           alt="Want to talk to an assistant?"
@@ -103,7 +116,7 @@ export function AssistantPeek() {
       </div>
 
       {/* Peeking Monkey */}
-      <div className="assistant-monkey-frame">
+      <div className="assistant-monkey-frame" onClick={handleClick}>
         <img
           src="/assistant-monkey.webp"
           alt="Assistant Monkey"
