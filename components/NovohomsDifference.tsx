@@ -50,6 +50,10 @@ export function NovohomsDifference() {
 
     const calculateStep = () => {
       if (!sectionRef.current) return;
+      if (typeof window !== "undefined" && window.innerWidth <= 980) {
+        setActiveIndex(0);
+        return;
+      }
       const rect = sectionRef.current.getBoundingClientRect();
       const totalDistance = sectionRef.current.offsetHeight - window.innerHeight;
 
