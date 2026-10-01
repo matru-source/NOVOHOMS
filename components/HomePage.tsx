@@ -77,6 +77,14 @@ export default function HomePage() {
       <Reveal delay={140} className="intro-copy"><p>We begin with the person, not the property. Your ambitions, timing and idea of what comes next shape every opportunity we bring to the table.</p><Link href="/how-we-help" className="text-link">Discover our approach <b>↗</b></Link></Reveal>
     </section>
 
+    <section className="properties-section section">
+      <div className="section-heading row">
+        <Reveal><p className="eyebrow">Selected opportunities</p><h2>Distinctive places.<br /><em>Considered potential.</em></h2></Reveal>
+        <Reveal delay={100}><Link href="/opportunities" className="text-link">View all opportunities <b>↗</b></Link></Reveal>
+      </div>
+      <div className="property-grid">{liveProperties.slice(0, 3).map((p, i) => <Reveal variant="clip" delay={i * 90} key={p.slug}><PropertyCard property={p} index={i} /></Reveal>)}</div>
+    </section>
+
     <section className="category-photo-section section" id="categories">
       <div className="section-heading row">
         <Reveal>
@@ -178,14 +186,6 @@ export default function HomePage() {
           </Link>
         </Reveal>
       </div>
-    </section>
-
-    <section className="properties-section section">
-      <div className="section-heading row">
-        <Reveal><p className="eyebrow">Selected opportunities</p><h2>Distinctive places.<br /><em>Considered potential.</em></h2></Reveal>
-        <Reveal delay={100}><Link href="/opportunities" className="text-link">View all opportunities <b>↗</b></Link></Reveal>
-      </div>
-      <div className="property-grid">{liveProperties.slice(0, 3).map((p, i) => <Reveal variant="clip" delay={i * 90} key={p.slug}><PropertyCard property={p} index={i} /></Reveal>)}</div>
     </section>
 
     <NovohomsDifference />
