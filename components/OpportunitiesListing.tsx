@@ -3,9 +3,34 @@
 import { useEffect, useMemo, useState } from "react";
 import { PropertyCard } from "./PropertyCard";
 import { Reveal } from "./Reveal";
+import { EmptyState } from "./EmptyState";
+import { whatsapp } from "@/data/site";
 import type { ManagedOpportunity } from "@/lib/opportunity-store";
 
 const categories = ["All", "Residential", "Land & plots", "Commercial", "Investment"] as const;
+
+const emptyStateTexts: Record<string, { title: string; desc: string }> = {
+  "Land & plots": {
+    title: "No Land & plots opportunities listed yet.",
+    desc: "We are curating high-potential Land & plots opportunities in Bhubaneswar. Contact our advisors to hear about unlisted and upcoming projects.",
+  },
+  Commercial: {
+    title: "No Commercial opportunities listed currently.",
+    desc: "We are curating prime commercial, corporate offices, and retail spaces in Bhubaneswar. Speak with an advisor for upcoming opportunities and private mandates.",
+  },
+  Investment: {
+    title: "No Investment opportunities listed currently.",
+    desc: "High-yield and capital appreciation opportunities are actively being vetted. Connect with our advisory team to access private off-market assets.",
+  },
+  Residential: {
+    title: "No Residential opportunities matching this filter.",
+    desc: "We are curating distinctive residential enclaves, villas, and penthouses. Reach out to our advisors for upcoming and off-market residences.",
+  },
+  All: {
+    title: "No opportunities available right now.",
+    desc: "Our advisory team is currently preparing our next release of distinctive real estate opportunities. Contact our team to receive direct alerts.",
+  },
+};
 
 export function OpportunitiesListing({
   properties,
@@ -24,42 +49,34 @@ export function OpportunitiesListing({
         const found = categories.find(
           (c) =>
             c.toLowerCase() === cat.toLowerCase() ||
-            (c === "Investment" && cat.toLowerCase().startsWith("invest")) ||
             (c === "Land & plots" && cat.toLowerCase().includes("land"))
         );
         if (found) setSelectedCategory(found);
+      } else {
+        setSelectedCategory("All");
       }
     };
 
     syncCategory();
     window.addEventListener("popstate", syncCategory);
-    window.addEventListener("hashchange", syncCategory);
-    return () => {
-      window.removeEventListener("popstate", syncCategory);
-      window.removeEventListener("hashchange", syncCategory);
-    };
+    return () => window.removeEventListener("popstate", syncCategory);
   }, []);
 
   const filtered = useMemo(() => {
     if (selectedCategory === "All") return properties;
-    return properties.filter((p) => {
-      const cat = (p.category || "Residential").toLowerCase();
-      const eyebrow = (p.eyebrow || "").toLowerCase();
-      const sel = selectedCategory.toLowerCase();
-      if (sel === "land & plots" || sel === "land") {
-        return cat.includes("land") || eyebrow.includes("land");
-      }
-      return cat.includes(sel) || eyebrow.includes(sel);
-    });
+    return properties.filter((p) => p.category === selectedCategory);
   }, [properties, selectedCategory]);
 
+  const activeEmptyText = emptyStateTexts[selectedCategory] || {
+    title: `No ${selectedCategory} opportunities listed yet.`,
+    desc: `We are curating high-potential ${selectedCategory} opportunities in Bhubaneswar. Contact our advisors to hear about unlisted and upcoming projects.`,
+  };
+
   return (
-    <section className="properties-section section" id="opportunities-list">
-      <div className="section-heading row">
+    <section className="section" id="opportunities-list" style={{ paddingTop: 40 }}>
+      <div className="section-heading row" style={{ marginBottom: 40 }}>
         <Reveal>
-          <p className="eyebrow">
-            {selectedCategory === "All" ? "Selected opportunities" : selectedCategory} · Available now
-          </p>
+          <p className="eyebrow">Curated collection</p>
           <h2>
             Places designed
             <br />
@@ -89,26 +106,24 @@ export function OpportunitiesListing({
       </div>
 
       {!filtered.length && (
-        <div style={{ textAlign: "center", padding: "80px 20px" }}>
-          <p className="eyebrow" style={{ color: "var(--gold)" }}>
-            Expanding Portfolio
-          </p>
-          <h3 style={{ fontFamily: "var(--serif)", fontSize: 32, fontWeight: 500, margin: "10px 0" }}>
-            No {selectedCategory} opportunities listed yet.
-          </h3>
-          <p style={{ color: "#667771", maxWidth: 480, margin: "0 auto 25px" }}>
-            We are curating high-potential {selectedCategory} opportunities in Bhubaneswar. Contact our
-            advisors to hear about unlisted and upcoming projects.
-          </p>
-          <button
-            type="button"
-            className="button-link"
-            onClick={() => setSelectedCategory("All")}
-            style={{ display: "inline-flex" }}
-          >
-            <span>View all opportunities</span>
-          </button>
-        </div>
+        <Reveal>
+          <EmptyState
+            eyebrow="EXPANDING PORTFOLIO"
+            title={activeEmptyText.title}
+            description={activeEmptyText.desc}
+            primaryAction={{
+              label: "View all opportunities",
+              onClick: () => setSelectedCategory("All"),
+            }}
+            secondaryAction={{
+              label: "Talk to an advisor",
+              href: `https://wa.me/919777958275?text=${encodeURIComponent(
+                `Hi NOVOHOMS, I am inquiring about upcoming ${selectedCategory} opportunities.`
+              )}`,
+              isWhatsApp: true,
+            }}
+          />
+        </Reveal>
       )}
     </section>
   );
