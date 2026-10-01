@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import { nav, whatsapp } from "@/data/site";
+import { MobileNavDrawer } from "./MobileNavDrawer";
 import { MotionLayer } from "./MotionLayer";
 
 export function WhatsAppIcon({ size = 16, className = "" }: { size?: number; className?: string }) {
@@ -171,6 +172,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </button>
         </div>
       </header>
+      <MobileNavDrawer
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        isNavActive={isNavActive}
+      />
       <main>{children}</main>
       <footer className="site-footer">
         <div className="footer-lead">
