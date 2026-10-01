@@ -6,6 +6,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { nav, whatsapp } from "@/data/site";
 import { MobileNavDrawer } from "./MobileNavDrawer";
 import { MotionLayer } from "./MotionLayer";
+import { AssistantPeek } from "./AssistantPeek";
 
 export function WhatsAppIcon({ size = 16, className = "" }: { size?: number; className?: string }) {
   return (
@@ -239,6 +240,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <WhatsAppIcon size={20} />
         </b>
       </a>
+      <AssistantPeek />
     </>
   );
 }
