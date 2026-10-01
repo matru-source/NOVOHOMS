@@ -722,7 +722,7 @@
     max-width: 100%;
   }
   .contact-form-wrapper {
-    margin-top: 0;
+    margin-top: 10px;
   }
   .contact-advisor-character {
     display: none !important;
@@ -731,11 +731,14 @@
     display: block !important;
     width: clamp(260px, 78vw, 360px);
     height: auto;
-    margin: 0 auto -24px auto;
+    margin: 0 auto -56px auto;
     position: relative;
     z-index: 5;
     pointer-events: none;
-    filter: drop-shadow(0 12px 28px rgba(16, 45, 39, 0.14));
+    filter: drop-shadow(0 10px 24px rgba(16, 45, 39, 0.12));
+  }
+  .contact-form-wrapper .form-card {
+    padding-top: 38px;
   }
 }
 
@@ -767,7 +770,10 @@
   }
   .contact-advisor-mobile-character {
     width: clamp(240px, 86vw, 330px);
-    margin: 0 auto -20px auto;
+    margin: 0 auto -50px auto;
+  }
+  .contact-form-wrapper .form-card {
+    padding-top: 34px;
   }
   .came-together-section {
     padding: 60px 18px;
