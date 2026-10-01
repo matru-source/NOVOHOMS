@@ -48,7 +48,7 @@ export function InfoCards({
             <span className="info-card-num">0{i + 1}</span>
             {item.image && (
               <div className="info-card-art">
-                <img src={item.image} alt={item.title} loading="lazy" decoding="async" />
+                <img src={item.image} alt={item.title} loading="eager" decoding="async" />
               </div>
             )}
             <div className="info-card-body">

@@ -13,6 +13,7 @@ const expandingCategories = [
     title: "Land & plots",
     desc: "Curated parcels and residential layouts.",
     image: "/portfolio/land-plots.webp",
+    blur: "data:image/webp;base64,UklGRpQAAABXRUJQVlA4IIgAAACwBACdASogABIAPzmOu1WvKiYjMBgIAeAnCWYAvkgQ7Lv1NGcGf2z+0euExjsAAP7Tc2YDX3y8p+j/nrLxCyiEBrKTcrm4fKaMWV2aGPcV7LoJakABI0Xq613CBoQHZW+NNhN2Jn5/7kF/+eyZLEDTQTZcN7OxuBLTv6jeGGHo6zChDqRyAAAA",
     alt: "Master-planned land and residential plots in Bhubaneswar",
     href: "/opportunities?category=Land%20%26%20plots#opportunities-list",
     actionLabel: "Explore land & plots",
@@ -21,6 +22,7 @@ const expandingCategories = [
     title: "Commercial spaces",
     desc: "Prime corporate offices and retail destinations.",
     image: "/portfolio/commercial-spaces.webp",
+    blur: "data:image/webp;base64,UklGRr4AAABXRUJQVlA4ILIAAADQBQCdASogABIAPzmEuFOvKCUisAgB4CcJagCsMoSCntxCEhGcUlXJXYIKs4PMed1EdGSMsSoAAP53oFPHIYm35/y6JPNeBG7GsakWjAlsmiti8uSp50FjL3QRDO0boqmSQRISuvdCWQg288JwE0kJn6Az89icVp448ns8q/j8xUWWAbHj/A+PnxZVNtHrNyOV/UX7kZ1dgvRa9cMk3VD1lYblgSlrtyOB/I0aX1GwMAAA",
     alt: "Modern premium commercial office and retail spaces in Bhubaneswar",
     href: "/opportunities?category=Commercial#opportunities-list",
     actionLabel: "Explore commercial",
@@ -29,6 +31,7 @@ const expandingCategories = [
     title: "Investment opportunities",
     desc: "Strategic capital growth and yield assets.",
     image: "/portfolio/investment-opportunities.webp",
+    blur: "data:image/webp;base64,UklGRo4AAABXRUJQVlA4IIIAAADQBACdASogABUAPzmKulOvKaWisAgB4CcJQBf9jSv2ee4YwSb/NXZ75PDMKGwIAAD+9+a9dqEV5V9yRVcDlo85jAWJQijGVR9PaL8v4RGfezxVc6WoFPsOX+Pb2yIml2Nygzod0cbjxj2w02nZdFLjWbd7GOh4u9wxu1VJ3XWdUAAA",
     alt: "High-potential real estate and development investments in Bhubaneswar",
     href: "/opportunities?category=Investment#opportunities-list",
     actionLabel: "Explore investments",
@@ -55,6 +58,15 @@ export default async function OpportunitiesPage() {
 
   return (
     <>
+      {expandingCategories.map((item) => (
+        <link
+          key={item.image}
+          rel="preload"
+          as="image"
+          href={item.image}
+          fetchPriority="high"
+        />
+      ))}
       <PageHero
         eyebrow="Bhubaneswar · Odisha"
         title={
@@ -78,14 +90,23 @@ export default async function OpportunitiesPage() {
         </Reveal>
         <div className="portfolio-expansion-grid">
           {expandingCategories.map((item, i) => (
-            <Reveal delay={i * 90} key={item.title} variant="clip">
-              <Link href={item.href} className="portfolio-expansion-card">
+            <Reveal delay={i * 40} key={item.title}>
+              <Link
+                href={item.href}
+                className="portfolio-expansion-card"
+                style={{
+                  backgroundImage: `url('${item.blur}')`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              >
                 <img
                   src={item.image}
                   alt={item.alt}
                   className="portfolio-expansion-bg"
-                  loading="lazy"
-                  decoding="async"
+                  loading="eager"
+                  decoding="sync"
+                  fetchPriority="high"
                 />
                 <div className="portfolio-expansion-overlay" />
                 <div className="portfolio-expansion-bottom">

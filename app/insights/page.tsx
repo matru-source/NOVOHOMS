@@ -97,7 +97,7 @@ export default function InsightsPage() {
                   <img
                     src={item.image}
                     alt={item.alt}
-                    loading="lazy"
+                    loading="eager"
                     style={{ objectPosition: item.position }}
                     className="perspective-card-img"
                   />
