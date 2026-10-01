@@ -35,14 +35,23 @@ export function PageHero({
   );
 }
 
-export function InfoCards({ items }: { items: { title: string; text: string }[] }) {
+export function InfoCards({
+  items,
+}: {
+  items: { title: string; text: string; image?: string }[];
+}) {
   return (
     <div className="card-grid">
       {items.map((item, i) => (
         <Reveal delay={i * 60} key={item.title}>
-          <article className="info-card">
-            <span>0{i + 1}</span>
-            <div>
+          <article className={`info-card ${item.image ? "has-img" : ""}`}>
+            <span className="info-card-num">0{i + 1}</span>
+            {item.image && (
+              <div className="info-card-art">
+                <img src={item.image} alt={item.title} loading="lazy" decoding="async" />
+              </div>
+            )}
+            <div className="info-card-body">
               <h3>{item.title}</h3>
               <p>{item.text}</p>
             </div>
