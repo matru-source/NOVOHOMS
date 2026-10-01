@@ -64,6 +64,13 @@ export default function ContactPage() {
                 loading="eager"
                 decoding="async"
               />
+              <img
+                src="/contact/advisor-mobile-character.webp"
+                alt="NOVOHOMS Advisor"
+                className="contact-advisor-mobile-character"
+                loading="eager"
+                decoding="async"
+              />
               <EnquiryForm />
             </div>
           </Reveal>

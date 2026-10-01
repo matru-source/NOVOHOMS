@@ -696,6 +696,10 @@
   filter: drop-shadow(-8px 18px 36px rgba(16, 45, 39, 0.16));
 }
 
+.contact-advisor-mobile-character {
+  display: none !important;
+}
+
 @media (max-width: 1200px) {
   .contact-grid-layout {
     gap: clamp(80px, 12vw, 160px);
@@ -721,14 +725,17 @@
     margin-top: 0;
   }
   .contact-advisor-character {
+    display: none !important;
+  }
+  .contact-advisor-mobile-character {
+    display: block !important;
+    width: clamp(260px, 78vw, 360px);
+    height: auto;
+    margin: 0 auto -24px auto;
     position: relative;
-    left: auto;
-    top: auto;
-    transform: none;
-    height: clamp(250px, 48vw, 360px);
-    margin: 0 auto -30px 18px;
-    display: block;
     z-index: 5;
+    pointer-events: none;
+    filter: drop-shadow(0 12px 28px rgba(16, 45, 39, 0.14));
   }
 }
 
@@ -758,9 +765,9 @@
   .empty-state-advisor-img {
     max-height: 260px;
   }
-  .contact-advisor-character {
-    height: clamp(220px, 55vw, 300px);
-    margin: 0 auto -20px 12px;
+  .contact-advisor-mobile-character {
+    width: clamp(240px, 86vw, 330px);
+    margin: 0 auto -20px auto;
   }
   .came-together-section {
     padding: 60px 18px;
