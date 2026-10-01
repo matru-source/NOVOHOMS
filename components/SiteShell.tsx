@@ -152,15 +152,12 @@ export function SiteShell({ children }: { children: ReactNode }) {
             href={whatsapp}
             target="_blank"
             rel="noreferrer"
-            className="whatsapp"
-            aria-label="Chat on WhatsApp"
-            style={{ display: "grid", placeItems: "center" }}
+            className="header-cta"
+            aria-label="Talk to an assistant on WhatsApp"
           >
-            <WhatsAppIcon size={18} />
+            <WhatsAppIcon size={16} />
+            <span>Talk to an assistant</span>
           </a>
-          <Link href="/contact" className="header-cta">
-            Talk to an advisor
-          </Link>
           <button
             className={`menu-button ${open ? "active" : ""}`}
             onClick={() => setOpen(!open)}
