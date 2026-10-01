@@ -125,8 +125,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
     <>
       <MotionLayer />
       <div className="scroll-progress" style={{ transform: `scaleX(${progress})` }} />
-      <header className={`site-header ${scrolled ? "scrolled" : ""}`}>
-        <Link href="/" className="brand" aria-label="NOVOHOMS home">
+      <header className={`site-header ${scrolled ? "scrolled" : ""} ${open ? "menu-open" : ""}`}>
+        <Link href="/" className="brand" aria-label="NOVOHOMS home" onClick={() => setOpen(false)}>
           <BrandMark size={34} />
           <span>NOVOHOMS</span>
         </Link>

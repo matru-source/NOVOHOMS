@@ -85,13 +85,17 @@ export function NovohomsDifference() {
     };
   }, []);
 
-  const scrollToStep = (index: number) => {
+  const selectStep = (index: number) => {
+    setActiveIndex(index);
     if (!sectionRef.current) return;
-    const totalDistance = sectionRef.current.offsetHeight - window.innerHeight;
-    const containerTop = window.scrollY + sectionRef.current.getBoundingClientRect().top;
-    // Scroll to the midpoint of the selected step zone
-    const targetY = containerTop + ((index + 0.5) / 4) * totalDistance;
-    window.scrollTo({ top: targetY, behavior: "smooth" });
+    if (typeof window !== "undefined" && window.innerWidth > 980) {
+      const totalDistance = sectionRef.current.offsetHeight - window.innerHeight;
+      if (totalDistance > 0) {
+        const containerTop = window.scrollY + sectionRef.current.getBoundingClientRect().top;
+        const targetY = containerTop + ((index + 0.5) / 4) * totalDistance;
+        window.scrollTo({ top: targetY, behavior: "smooth" });
+      }
+    }
   };
 
   return (
@@ -139,7 +143,7 @@ export function NovohomsDifference() {
                     type="button"
                     key={item.number}
                     className={`difference-principle-item ${isActive ? "is-active" : ""}`}
-                    onClick={() => scrollToStep(i)}
+                    onClick={() => selectStep(i)}
                     aria-label={`Show step ${item.number}: ${item.title}`}
                   >
                     <div className="difference-item-indicator">
