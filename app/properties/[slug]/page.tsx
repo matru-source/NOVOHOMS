@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { EnquiryForm, PageHero } from "@/components/InnerPage";
 import { Reveal } from "@/components/Reveal";
@@ -17,10 +18,53 @@ async function findProperty(slug: string, includeDrafts = false) {
   }
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const { slug } = await params;
   const p = await findProperty(slug, true);
-  return { title: p?.name || "Property", description: p?.summary };
+  if (!p) {
+    return { title: "Property Not Found" };
+  }
+
+  const title = `${p.name} — ${p.config || "Luxury Residences"}`;
+  const description =
+    p.summary ||
+    `${p.name} located in ${p.location}. Modern curated property presented by NOVOHOMS real estate advisory.`;
+  const canonicalUrl = `https://novohoms.com/properties/${slug}`;
+  const imageUrl = p.image?.startsWith("http")
+    ? p.image
+    : `https://novohoms.com${p.image}`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      type: "website",
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: `${p.name} — ${p.location}`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [imageUrl],
+    },
+  };
 }
 
 export default async function PropertyPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -34,8 +78,46 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
     `Hi NOVOHOMS, I'm interested in ${p.name} and would like to know more.`
   )}`;
 
+  const propertyJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "RealEstateListing",
+    name: p.name,
+    description: p.summary,
+    url: `https://novohoms.com/properties/${slug}`,
+    image: p.image?.startsWith("http") ? p.image : `https://novohoms.com${p.image}`,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Bhubaneswar",
+      addressRegion: "Odisha",
+      addressCountry: "IN",
+      description: p.location,
+    },
+    containedInPlace: {
+      "@type": "Place",
+      name: p.location,
+    },
+    offers: {
+      "@type": "Offer",
+      businessFunction: "https://schema.org/SellAction",
+      availability: p.status?.toLowerCase().includes("ready")
+        ? "https://schema.org/InStock"
+        : "https://schema.org/PreOrder",
+      priceCurrency: "INR",
+      seller: {
+        "@type": "RealEstateAgent",
+        name: "NOVOHOMS",
+        url: "https://novohoms.com",
+        telephone: "+919777958275",
+      },
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(propertyJsonLd) }}
+      />
       <PageHero
         className="property-hero"
         eyebrow={p.eyebrow}

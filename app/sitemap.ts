@@ -5,23 +5,68 @@ import { properties } from "@/data/site";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://novohoms.com";
 
-  const staticRoutes = [
-    "",
-    "/about",
-    "/opportunities",
-    "/how-we-help",
-    "/partner",
-    "/insights",
-    "/insights/the-novohoms-view-price-isnt-the-same-as-value",
-    "/contact",
-    "/privacy-policy",
-    "/terms-of-use",
-  ].map((route) => ({
-    url: `${baseUrl}${route}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: route === "" ? 1.0 : 0.8,
-  }));
+  const staticRoutes: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/opportunities`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/about`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/how-we-help`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/partner`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/insights`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/insights/the-novohoms-view-price-isnt-the-same-as-value`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/contact`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/privacy-policy`,
+      lastModified: new Date(),
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/terms-of-use`,
+      lastModified: new Date(),
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+  ];
 
   let propertySlugs: string[] = properties.map((p) => p.slug);
   try {
@@ -33,10 +78,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // fallback to static properties list
   }
 
-  const dynamicRoutes = propertySlugs.map((slug) => ({
+  const dynamicRoutes: MetadataRoute.Sitemap = propertySlugs.map((slug) => ({
     url: `${baseUrl}/properties/${slug}`,
     lastModified: new Date(),
-    changeFrequency: "daily" as const,
+    changeFrequency: "weekly",
     priority: 0.9,
   }));
 

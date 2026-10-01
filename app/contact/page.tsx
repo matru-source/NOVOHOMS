@@ -1,10 +1,32 @@
+import type { Metadata } from "next";
 import { CallbackForm } from "@/components/CallbackForm";
 import { ContactQuickStrip } from "@/components/ContactQuickStrip";
 import { EnquiryForm, PageHero } from "@/components/InnerPage";
 import { Reveal } from "@/components/Reveal";
 import { whatsapp } from "@/data/site";
 
-export const metadata = { title: "Contact" };
+export const metadata: Metadata = {
+  title: "Contact Our Advisory Team | Saheed Nagar, Bhubaneswar",
+  description:
+    "Connect with a NOVOHOMS real estate advisor. Visit our Saheed Nagar office in Bhubaneswar, WhatsApp us directly, or request a scheduled advisory callback.",
+  alternates: {
+    canonical: "/contact",
+  },
+  openGraph: {
+    title: "Contact Our Advisory Team | NOVOHOMS Bhubaneswar",
+    description:
+      "Connect with a NOVOHOMS real estate advisor. Visit our Saheed Nagar office in Bhubaneswar, WhatsApp us directly, or request a scheduled advisory callback.",
+    url: "https://novohoms.com/contact",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Contact NOVOHOMS Real Estate Advisory",
+      },
+    ],
+  },
+};
 
 export default function ContactPage() {
   return (

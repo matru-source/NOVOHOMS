@@ -1,9 +1,69 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { CTA, PageHero } from "@/components/InnerPage";
 import { Reveal } from "@/components/Reveal";
 import { WhatsAppIcon } from "@/components/SiteShell";
 
-export const metadata = { title: "Why Price Isn't the Same as Value" };
+export const metadata: Metadata = {
+  title: "Why Price Isn't the Same as Value | NOVOHOMS Journal",
+  description:
+    "A deeper look by Jigyasha Singh at what really creates value in real estate: architectural longevity, location fundamentals, and quality over short-term hype.",
+  alternates: {
+    canonical: "/insights/the-novohoms-view-price-isnt-the-same-as-value",
+  },
+  openGraph: {
+    title: "Why Price Isn't the Same as Value | NOVOHOMS Journal",
+    description:
+      "A deeper look by Jigyasha Singh at what really creates value in real estate: architectural longevity, location fundamentals, and quality over short-term hype.",
+    url: "https://novohoms.com/insights/the-novohoms-view-price-isnt-the-same-as-value",
+    type: "article",
+    publishedTime: "2026-09-16T00:00:00.000Z",
+    authors: ["Jigyasha Singh"],
+    images: [
+      {
+        url: "/why-price.webp",
+        width: 1200,
+        height: 630,
+        alt: "Why Price Isn't the Same as Value — NOVOHOMS",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Why Price Isn't the Same as Value | NOVOHOMS Journal",
+    description:
+      "A deeper look at what really creates value in real estate: architectural longevity, location fundamentals, and quality over hype.",
+    images: ["/why-price.webp"],
+  },
+};
+
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: "Why Price Isn't the Same as Value in Real Estate",
+  image: "https://novohoms.com/why-price.webp",
+  datePublished: "2026-09-16T00:00:00.000Z",
+  dateModified: "2026-09-16T00:00:00.000Z",
+  author: {
+    "@type": "Person",
+    name: "Jigyasha Singh",
+    jobTitle: "Co-Founder",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "NOVOHOMS",
+    logo: {
+      "@type": "ImageObject",
+      url: "https://novohoms.com/brand-mark.png",
+    },
+  },
+  description:
+    "A deeper look at what really creates value in real estate: architectural longevity, location fundamentals, and quality over hype.",
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": "https://novohoms.com/insights/the-novohoms-view-price-isnt-the-same-as-value",
+  },
+};
 
 export default function ArticlePage() {
   const articleUrl =
@@ -19,6 +79,10 @@ export default function ArticlePage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <PageHero
         eyebrow="The NOVOHOMS View · Market insights"
         title={

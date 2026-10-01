@@ -1,8 +1,30 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { CTA, PageHero } from "@/components/InnerPage";
 import { Reveal } from "@/components/Reveal";
 
-export const metadata = { title: "Journal" };
+export const metadata: Metadata = {
+  title: "Journal & Market Intelligence — Bhubaneswar Real Estate",
+  description:
+    "Perspectives, investment strategies, architectural analysis, and market intelligence on the evolving Bhubaneswar and Odisha property landscape.",
+  alternates: {
+    canonical: "/insights",
+  },
+  openGraph: {
+    title: "Journal & Market Intelligence | NOVOHOMS",
+    description:
+      "Perspectives, investment strategies, architectural analysis, and market intelligence on the evolving Bhubaneswar and Odisha property landscape.",
+    url: "https://novohoms.com/insights",
+    images: [
+      {
+        url: "/insights-market-intelligence.webp",
+        width: 1200,
+        height: 630,
+        alt: "NOVOHOMS Real Estate Journal & Market Intelligence",
+      },
+    ],
+  },
+};
 
 const perspectiveGuides = [
   {

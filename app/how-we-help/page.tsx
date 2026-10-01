@@ -1,8 +1,30 @@
+import type { Metadata } from "next";
 import { CTA, InfoCards, PageHero } from "@/components/InnerPage";
 import { PrinciplesCollage } from "@/components/PrinciplesCollage";
 import { Reveal } from "@/components/Reveal";
 
-export const metadata = { title: "How We Help" };
+export const metadata: Metadata = {
+  title: "How We Help Buyers, Investors & Landowners",
+  description:
+    "Discover the 4-stage NOVOHOMS advisory framework: goal discovery, curated property options, joint evaluation, and transparent transaction support in Bhubaneswar.",
+  alternates: {
+    canonical: "/how-we-help",
+  },
+  openGraph: {
+    title: "How We Help | NOVOHOMS Advisory Process",
+    description:
+      "Discover the 4-stage NOVOHOMS advisory framework: goal discovery, curated property options, joint evaluation, and transparent transaction support in Bhubaneswar.",
+    url: "https://novohoms.com/how-we-help",
+    images: [
+      {
+        url: "/difference-built-next.webp",
+        width: 1200,
+        height: 630,
+        alt: "How NOVOHOMS Helps Buyers and Investors",
+      },
+    ],
+  },
+};
 
 const process = [
   {

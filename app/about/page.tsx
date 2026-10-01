@@ -1,7 +1,29 @@
+import type { Metadata } from "next";
 import { CTA, PageHero } from "@/components/InnerPage";
 import { Reveal } from "@/components/Reveal";
 
-export const metadata = { title: "About" };
+export const metadata: Metadata = {
+  title: "About Us — Architectural & Strategic Real Estate Advisory",
+  description:
+    "Learn about NOVOHOMS: founded by Sheikh Obed Ali & Jigyasha Singh on deliberate advisory, deep market diligence, and curating exceptional properties in Bhubaneswar.",
+  alternates: {
+    canonical: "/about",
+  },
+  openGraph: {
+    title: "About Us | NOVOHOMS Real Estate Advisory",
+    description:
+      "Founded on deliberate advisory, deep market diligence, and curating exceptional residential and commercial spaces in Bhubaneswar.",
+    url: "https://novohoms.com/about",
+    images: [
+      {
+        url: "/founders.webp",
+        width: 1200,
+        height: 630,
+        alt: "Sheikh Obed Ali & Jigyasha Singh — Co-Founders, NOVOHOMS",
+      },
+    ],
+  },
+};
 
 export default function AboutPage() {
   return (

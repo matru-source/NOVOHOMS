@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero, CTA } from "@/components/InnerPage";
 import { OpportunitiesListing } from "@/components/OpportunitiesListing";
@@ -5,7 +6,28 @@ import { Reveal } from "@/components/Reveal";
 import { properties } from "@/data/site";
 import { ensureInitialOpportunities, listOpportunities, ManagedOpportunity } from "@/lib/opportunity-store";
 
-export const metadata = { title: "Opportunities" };
+export const metadata: Metadata = {
+  title: "Curated Real Estate Opportunities in Bhubaneswar",
+  description:
+    "Explore vetted luxury residences, commercial office spaces, plots, and strategic real estate investments across prime corridors in Bhubaneswar.",
+  alternates: {
+    canonical: "/opportunities",
+  },
+  openGraph: {
+    title: "Curated Real Estate Opportunities | NOVOHOMS",
+    description:
+      "Explore vetted luxury residences, commercial office spaces, plots, and strategic investments across prime corridors in Bhubaneswar.",
+    url: "https://novohoms.com/opportunities",
+    images: [
+      {
+        url: "/portfolio/commercial-spaces.webp",
+        width: 1200,
+        height: 630,
+        alt: "NOVOHOMS Real Estate Opportunities",
+      },
+    ],
+  },
+};
 export const dynamic = "force-dynamic";
 
 const expandingCategories = [
