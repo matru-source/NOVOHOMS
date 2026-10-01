@@ -72,11 +72,7 @@ export function OpportunitiesListing({
               key={c}
               type="button"
               onClick={() => setSelectedCategory(c)}
-              style={
-                selectedCategory === c
-                  ? { background: "var(--ink)", color: "white", borderColor: "var(--ink)" }
-                  : undefined
-              }
+              className={selectedCategory === c ? "is-active" : ""}
             >
               {c === "Land & plots" ? "Land" : c}
             </button>
