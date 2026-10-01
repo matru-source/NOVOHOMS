@@ -29,7 +29,7 @@ export default function ArticlePage() {
           </>
         }
         lead="A deeper look at what really creates value in real estate—and why it matters."
-        image="/why-price.png"
+        image="/why-price.webp"
       >
         <div className="page-hero-meta">
           <span>Jigyasha Singh</span>

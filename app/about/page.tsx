@@ -47,11 +47,12 @@ export default function AboutPage() {
           <Reveal>
             <div className="founders-hero-frame">
               <img
-                src="/founders.png"
+                src="/founders.webp"
                 alt="Sheikh Obed Ali & Jigyasha Singh — Co-Founders, NOVOHOMS"
                 width={1665}
                 height={944}
                 className="founders-hero-image"
+                decoding="async"
               />
             </div>
           </Reveal>

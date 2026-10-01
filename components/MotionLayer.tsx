@@ -4,15 +4,26 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 export function MotionLayer() {
-  const [finished, setFinished] = useState(false);
+  const [showLoader, setShowLoader] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
-      setFinished(true);
-      return;
+    try {
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!reduced && !sessionStorage.getItem("novohoms_splash_shown")) {
+        sessionStorage.setItem("novohoms_splash_shown", "1");
+        setShowLoader(true);
+        const timer = window.setTimeout(() => setShowLoader(false), 1200);
+        return () => window.clearTimeout(timer);
+      }
+    } catch {
+      // sessionStorage might fail in private browsing
     }
+  }, []);
+
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) return;
 
     let frame = 0;
     let lastY = window.scrollY;
@@ -56,15 +67,13 @@ export function MotionLayer() {
     });
 
     frame = requestAnimationFrame(render);
-    const timer = window.setTimeout(() => setFinished(true), 2100);
     return () => {
       cancelAnimationFrame(frame);
-      window.clearTimeout(timer);
       cleanups.forEach((cleanup) => cleanup());
     };
   }, [pathname]);
 
-  if (finished) return null;
+  if (!showLoader) return null;
   return (
     <div className="site-loader" aria-hidden="true">
       <div className="loader-panel loader-panel-a" />

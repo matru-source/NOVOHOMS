@@ -100,9 +100,9 @@ export default function HomePage() {
             className="category-photo-card"
           >
             <img
-              src="/category-residential.png"
+              src="/category-residential.webp"
               alt="Residential real estate opportunity"
-              loading="lazy"
+              decoding="async"
             />
             <div className="category-photo-content">
               <p className="category-tag">Opportunity</p>
@@ -121,9 +121,9 @@ export default function HomePage() {
             className="category-photo-card"
           >
             <img
-              src="/category-commercial.png"
+              src="/category-commercial.webp"
               alt="Commercial real estate opportunity"
-              loading="lazy"
+              decoding="async"
             />
             <div className="category-photo-content">
               <p className="category-tag">Opportunity</p>
@@ -142,9 +142,9 @@ export default function HomePage() {
             className="category-photo-card"
           >
             <img
-              src="/category-investments.png"
+              src="/category-investments.webp"
               alt="Investments real estate opportunity"
-              loading="lazy"
+              decoding="async"
             />
             <div className="category-photo-content">
               <p className="category-tag">Opportunity</p>
@@ -163,9 +163,9 @@ export default function HomePage() {
             className="category-photo-card"
           >
             <img
-              src="/category-land.png"
+              src="/category-land.webp"
               alt="Land & Plots real estate opportunity"
-              loading="lazy"
+              decoding="async"
             />
             <div className="category-photo-content">
               <p className="category-tag">Opportunity</p>
